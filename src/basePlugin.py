@@ -1,13 +1,13 @@
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 
 
 class BasePlugin(ABC):
-    @abstractproperty
+    @abstractmethod
     def getName(self):
         ...
 
     @abstractmethod
-    def run(self):
+    def start(self):
         ...
 
     @abstractmethod
