@@ -1,5 +1,7 @@
-from . import glob, path, Plugin_Template, Dir_With_Plugins, import_module
-from .basePlugin import BasePlugin
+from . import glob, import_module, path 
+
+from . import Plugin_Template, Dir_With_Plugins
+from . import BasePlugin
 
 
 class PluginLoader:

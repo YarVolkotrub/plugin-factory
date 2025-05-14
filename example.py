@@ -3,12 +3,12 @@ from src.plugin_manager import PluginManager
 
 
 def main():
-    pluginLoader = PluginLoader()
+    pluginLoader: PluginLoader  = PluginLoader()
     pluginLoader.load()
     plugins: dict = pluginLoader.get
     print(plugins)
 
-    pluginManager = PluginManager(plugins)
+    pluginManager: PluginManager = PluginManager(plugins)
     pluginManager.start('Test')
     pluginManager.stop('Test')
 
