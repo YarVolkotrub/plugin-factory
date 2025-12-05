@@ -1,10 +1,4 @@
-from os import path
-from glob import glob
-from importlib import import_module
+__all__: list[str] = ["PLUGIN_TEMPLATE", "PLUGIN_DIR_NAME"]
 
-from .basePlugin import BasePlugin
-
-__all__ = [path, glob, import_module, BasePlugin]
-
-Plugin_Template: str = '/*/plugin*.py'
-Dir_With_Plugins: str = 'plugins'
+PLUGIN_TEMPLATE: str = '/*/plugin*.py'
+PLUGIN_DIR_NAME: str = 'plugins'

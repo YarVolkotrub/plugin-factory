@@ -71,8 +71,6 @@ instance/
 # Sphinx documentation
 docs/_build/
 
-.gitignore
-
 # PyBuilder
 .pybuilder/
 target/
@@ -174,3 +172,5 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+example.py
