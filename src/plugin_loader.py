@@ -46,8 +46,8 @@ class PluginLoader:
             logging.error("Failed to import plugin %s: %s", plugin, ex)
 
     def __initiate(self) -> None:
-        for mod_name in list(self.__imported_modules):
-            module = sys.modules.get(mod_name)
+        for module_name in list(self.__imported_modules):
+            module = sys.modules.get(module_name)
 
             if module is None:
                 continue
@@ -61,7 +61,7 @@ class PluginLoader:
                 if not issubclass(obj, IPlugin) or obj is IPlugin:
                     continue
 
-                if getattr(obj, "__module__", None) != mod_name:
+                if getattr(obj, "__module__", None) != module_name:
                     continue
 
                 if inspect.isabstract(obj):
