@@ -9,8 +9,8 @@ def main():
     print(plugins)
 
     pluginManager: PluginManager = PluginManager(plugins)
-    pluginManager.start('Test')
-    pluginManager.stop('Test')
+    pluginManager.start('Logger')
+    pluginManager.stop('Logger')
     pluginManager.stop_all()
     pluginManager.start_all()
     print(pluginManager.get_status())
