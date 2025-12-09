@@ -7,34 +7,34 @@ logger = logging.getLogger(__name__)
 
 
 class PluginManager:
-    def __init__(self, plugins: dict[str, IPlugin]):
-        self.__plugins: dict[str, IPlugin] = plugins
+    def __init__(self, plugins: dict[str, IPlugin]) -> None:
+        self.__plugins: dict[str, IPlugin] = dict(plugins)
 
     def start(self, plugin_name: str) -> None:
         if plugin_name is None:
-            raise ValueError("plugin_name is None")
+            raise ValueError("plugin_name cannot be None")
 
-        self.__execute(plugin_name, lambda p: p.start())
+        if not isinstance(plugin_name, str) or not plugin_name.strip():
+            raise ValueError("plugin_name must be a non-empty string")
+
+        self.__execute(plugin_name, lambda plugin: plugin.start())
 
     def stop(self, plugin_name: str) -> None:
         if plugin_name is None:
-            raise ValueError("plugin_name is None")
+            raise ValueError("plugin_name cannot be None")
 
-        self.__execute(plugin_name, lambda p: p.stop())
+        if not isinstance(plugin_name, str) or not plugin_name.strip():
+            raise ValueError("plugin_name must be a non-empty string")
+
+        self.__execute(plugin_name, lambda plugin: plugin.stop())
 
     def start_all(self) -> None:
         for name in list(self.__plugins.keys()):
-            try:
-                self.start(name)
-            except KeyError:
-                logger.error("Plugin %s not found when starting all", name)
+            self.start(name)
 
     def stop_all(self) -> None:
         for name in list(self.__plugins.keys()):
-            try:
-                self.stop(name)
-            except KeyError:
-                logger.error("Plugin %s not found when stopping all", name)
+            self.stop(name)
 
     def get_status(self) -> dict[str, str]:
         statuses: dict[str, str] = {}
@@ -56,13 +56,23 @@ class PluginManager:
 
         return plugin
 
-    def __execute(self, plugin_name: str,
-                  action: Callable[[IPlugin], None]) -> None:
-        plugin = self.__get_plugin(plugin_name)
+    def __execute(
+            self,
+            plugin_name: str,
+            action: Callable[[IPlugin], None]
+    ) -> None:
+        try:
+            plugin = self.__get_plugin(plugin_name)
+        except KeyError as e:
+            logger.error("Plugin %s not found: %s", plugin_name, e)
+            return
 
         try:
             action(plugin)
-        except Exception:
-            logger.exception("Action failed for plugin %s", plugin_name)
-
+        except Exception as exc:
+            logger.exception(
+                "Action failed for plugin %s: %s",
+                plugin_name,
+                exc
+            )
 
