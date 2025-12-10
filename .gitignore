@@ -114,5 +114,3 @@ cython_debug/
 .ruff_cache/
 
 .pypirc
-
-example.py
