@@ -1,4 +1,4 @@
-from src.IPlugin import IPlugin
+from src import IPlugin
 
 
 class LoggerPlugin(IPlugin):

@@ -1,7 +1,7 @@
 import logging
 from typing import Callable
 
-from .IPlugin import IPlugin
+from ..Interfaces.IPlugin import IPlugin
 
 logger = logging.getLogger(__name__)
 
@@ -75,4 +75,3 @@ class PluginManager:
                 plugin_name,
                 exc
             )
-

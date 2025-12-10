@@ -1,15 +1,20 @@
-from .IPlugin import IPlugin
-from .IPluginLoader import IPluginLoader
-from .plugin_manager import PluginManager
+from .Interfaces import *
+from .Implementations import *
 
+__version__ = "1.1.0"
+__author__ = "Yaroslav Volkotrub"
 __all__ = [
+    # Implementations
+    "PluginManager",
+    "PluginLoader",
+    "PluginValidator",
+    "LocalStorage",
+    "FinderLocalPlugin",
+
+    # Interfaces
     "IPlugin",
     "IPluginLoader",
-    "PluginManager",
-    "PLUGIN_TEMPLATE",
-    "PLUGIN_DIR_NAME"
+    "IPluginValidator",
+    "IPluginStorage",
+    "IFinderPlugin",
 ]
-
-
-PLUGIN_TEMPLATE: str = '/*/plugin*.py'
-PLUGIN_DIR_NAME: str = 'plugins'
