@@ -11,8 +11,8 @@ class ExamplePlugin(IPlugin):
         return self.__name
 
     @property
-    def status(self) -> str:
-        return self.__state
+    def info(self) -> dict[str: dict]:
+        return dict[self.__name: dict["status": self.__state]]
 
     def start(self) -> None:
         self.__state = "running"

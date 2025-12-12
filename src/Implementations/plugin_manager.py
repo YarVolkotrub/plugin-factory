@@ -41,7 +41,7 @@ class PluginManager:
 
         for name, plugin in self.__plugins.items():
             try:
-                statuses[name] = plugin.status
+                statuses[name] = plugin.info
             except Exception:
                 logger.exception("Failed to read status from plugin %s", name)
                 statuses[name] = "error"

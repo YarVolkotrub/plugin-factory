@@ -1,6 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
+from types import MappingProxyType
 
 if TYPE_CHECKING:
     from .IPlugin import IPlugin
@@ -8,5 +9,5 @@ if TYPE_CHECKING:
 
 class IPluginLoader(ABC):
     @abstractmethod
-    def load(self) -> dict[str, 'IPlugin']:
+    def load(self) -> MappingProxyType[str, 'IPlugin']:
         ...

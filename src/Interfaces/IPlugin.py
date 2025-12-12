@@ -16,9 +16,7 @@ class IPlugin(ABC):
 
     @property
     @abstractmethod
-    def status(self) -> str:
-        """Return plugin status as a short string
-        (e.g. "running", "stopped")."""
+    def info(self) -> dict[str: dict]:
         ...
 
     @abstractmethod

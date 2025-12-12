@@ -13,8 +13,7 @@ class FinderLocalPlugin(IFinderPlugin):
         path_pattern: str = self.__storage.get()
         plugins: list[str] = []
 
-        for plugin_path in glob(path_pattern,
-                                recursive=True):
+        for plugin_path in glob(path_pattern, recursive=True):
             plugin_name: str = self.__get_full_name(plugin_path)
             plugins.append(plugin_name)
 

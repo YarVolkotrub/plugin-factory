@@ -5,7 +5,7 @@ import logging
 import sys
 from importlib import import_module
 
-from types import ModuleType
+from types import ModuleType, MappingProxyType
 
 from ..Interfaces.IPlugin import IPlugin
 from ..Interfaces.IPluginLoader import IPluginLoader
@@ -27,10 +27,10 @@ class PluginLoader(IPluginLoader):
         self.__imported_modules: list[str] = []
 
     @property
-    def plugins(self) -> dict[str, IPlugin]:
-        return dict(self.__plugins)
+    def plugins(self) -> MappingProxyType[str, IPlugin]:
+        return MappingProxyType(self.__plugins)
 
-    def load(self) -> dict[str, IPlugin]:
+    def load(self) -> MappingProxyType[str, IPlugin]:
         path_to_plugins: list[str] = self.__finder_plugin.get()
 
         for plugin_name in path_to_plugins:
@@ -87,21 +87,9 @@ class PluginLoader(IPluginLoader):
     ) -> list[type[IPlugin]]:
         discovered = []
 
-        for attr in dir(module):
-            obj = getattr(module, attr)
-
-            if not isinstance(obj, type):
-                continue
-
-            if not issubclass(obj, IPlugin) or obj is IPlugin:
-                continue
-
-            if getattr(obj, "__module__", None) != module_name:
-                continue
-
-            if inspect.isabstract(obj):
-                continue
-
-            discovered.append(obj)
+        for _, obj in inspect.getmembers(module, inspect.isclass):
+            if issubclass(obj, IPlugin) and obj is not IPlugin:
+                if not inspect.isabstract(obj):
+                    discovered.append(obj)
 
         return discovered
