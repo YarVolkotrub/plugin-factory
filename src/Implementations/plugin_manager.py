@@ -1,14 +1,16 @@
 import logging
 from typing import Callable
+from types import MappingProxyType
 
 from ..Interfaces.IPlugin import IPlugin
+from ..dataclasses.BaseInfo import BaseInfo
 
 logger = logging.getLogger(__name__)
 
 
 class PluginManager:
-    def __init__(self, plugins: dict[str, IPlugin]) -> None:
-        self.__plugins: dict[str, IPlugin] = dict(plugins)
+    def __init__(self, plugins: MappingProxyType[str, IPlugin]) -> None:
+        self.__plugins: MappingProxyType[str, IPlugin] = plugins
 
     def start(self, plugin_name: str) -> None:
         if plugin_name is None:
@@ -36,15 +38,14 @@ class PluginManager:
         for name in list(self.__plugins.keys()):
             self.stop(name)
 
-    def get_status(self) -> dict[str, str]:
-        statuses: dict[str, str] = {}
+    def get_status(self) -> dict[str, BaseInfo]:
+        statuses: dict[str, BaseInfo] = {}
 
         for name, plugin in self.__plugins.items():
             try:
                 statuses[name] = plugin.info
             except Exception:
                 logger.exception("Failed to read status from plugin %s", name)
-                statuses[name] = "error"
 
         return statuses
 

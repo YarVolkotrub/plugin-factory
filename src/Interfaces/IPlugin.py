@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from src.dataclasses.BaseInfo import BaseInfo
 
 
 class IPlugin(ABC):
@@ -16,7 +17,7 @@ class IPlugin(ABC):
 
     @property
     @abstractmethod
-    def info(self) -> dict[str: dict]:
+    def info(self) -> BaseInfo:
         ...
 
     @abstractmethod

@@ -56,7 +56,7 @@ class PluginLoader(IPluginLoader):
             if module is None:
                 continue
 
-            classes = self.__discover_plugin_classes(module, module_name)
+            classes = self.__discover_plugin_classes(module)
 
             for cls in classes:
                 instance = self.__instantiate_plugin(cls)
@@ -82,8 +82,7 @@ class PluginLoader(IPluginLoader):
 
     def __discover_plugin_classes(
             self,
-            module: ModuleType,
-            module_name: str
+            module: ModuleType
     ) -> list[type[IPlugin]]:
         discovered = []
 

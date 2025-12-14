@@ -1,4 +1,5 @@
 from src.Interfaces.IPlugin import IPlugin
+from src.Interfaces.IPlugin import BaseInfo
 
 
 class ExamplePlugin(IPlugin):
@@ -11,8 +12,8 @@ class ExamplePlugin(IPlugin):
         return self.__name
 
     @property
-    def info(self) -> dict[str: dict]:
-        return dict[self.__name: dict["status": self.__state]]
+    def info(self) -> BaseInfo:
+        ...
 
     def start(self) -> None:
         self.__state = "running"
