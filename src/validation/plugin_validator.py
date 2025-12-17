@@ -1,16 +1,12 @@
 import logging
-from ..Interfaces.IPlugin import IPlugin
-from ..Interfaces.IPluginValidator import IPluginValidator
+from src.interfaces.plugin import PluginBase
+from src.interfaces.validator import PluginValidatorBase
 
 logger = logging.getLogger(__name__)
 
 
-class PluginValidator(IPluginValidator):
-    def is_valid(self, instance: IPlugin, plugins: dict[str, IPlugin]) -> bool:
-        """
-        Validate plugin instance: name correctness + duplicates.
-        Returns True if plugin should be accepted.
-        """
+class PluginValidator(PluginValidatorBase):
+    def is_valid(self, instance: PluginBase, plugins: dict[str, PluginBase]) -> bool:
         name = getattr(instance, "name", None)
 
         if not isinstance(name, str) or not name:

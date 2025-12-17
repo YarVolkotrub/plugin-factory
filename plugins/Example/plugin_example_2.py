@@ -1,8 +1,8 @@
-from src.Interfaces.IPlugin import IPlugin
-from src.Interfaces.IPlugin import BaseInfo
+from src.interfaces.plugin import PluginBase
+from src.interfaces.plugin import InfoBase
 
 
-class ExamplePlugin(IPlugin):
+class ExamplePluginBase(PluginBase):
     def __init__(self):
         self.__name = "Example2"
         self.__state = "stopped"
@@ -12,8 +12,11 @@ class ExamplePlugin(IPlugin):
         return self.__name
 
     @property
-    def info(self) -> BaseInfo:
-        return BaseInfo(name=self.__name, state=self.__state)
+    def info(self) -> InfoBase:
+        return InfoBase(name=self.__name, state=self.__state)
+
+    def init(self) -> None:
+        ...
 
     def start(self) -> None:
         self.__state = "running"

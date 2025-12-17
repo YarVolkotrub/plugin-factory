@@ -15,9 +15,6 @@ class ExamplePluginBase(PluginBase):
     def info(self) -> InfoBase:
         return InfoBase(name=self.__name, state=self.__state)
 
-    def init(self) -> None:
-        ...
-
     def start(self) -> None:
         self.__state = "running"
         print("Example started")

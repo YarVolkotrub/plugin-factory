@@ -6,7 +6,7 @@ project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
 from src import (
-    PluginManager,
+    NewPluginManager,
     PluginLoader,
     LocalStorage,
     LocalPluginFinderBase,
@@ -43,15 +43,18 @@ def main():
     plugins = loader.load()
 
     print(f"Loaded {len(plugins)} plugins")
-    manager = PluginManager(plugins)
+    manager = NewPluginManager(plugins)
     status = manager.get_status()
     print(f"Plugin statuses: {status}")
     manager.start_all()
     status = manager.get_status()
     print(f"Plugin statuses: {status}")
+    print(manager.get_states())
     manager.stop_all()
     status = manager.get_status()
     print(f"Plugin statuses: {status}")
+
+    print(manager.get_states())
 
 if __name__ == "__main__":
     main()

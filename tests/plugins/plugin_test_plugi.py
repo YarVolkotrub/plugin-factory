@@ -1,10 +1,9 @@
 from src.interfaces.plugin import PluginBase
-from src.interfaces.plugin import InfoBase
+from src.dataclasses.info import InfoBase
 
-
-class ExamplePluginBase(PluginBase):
+class TestPlugin(PluginBase):
     def __init__(self):
-        self.__name = "Example3"
+        self.__name = "Example"
         self.__state = "stopped"
 
     @property

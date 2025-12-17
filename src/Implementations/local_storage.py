@@ -1,30 +1,22 @@
 from pathlib import Path
+from typing import Sequence
 
-from ..Interfaces.IPluginStorage import IPluginStorage
+from ..interfaces.plugin_storage import PluginStorageBase
+from ..exceptions import PluginStorageError
 
-PLUGIN_TEMPLATE: str = '/*/plugin*.py'
-PLUGIN_DIR_NAME: str = str(Path(__file__).parent.parent.parent / 'plugins')
-
-
-class LocalStorage(IPluginStorage):
+class LocalStorage(PluginStorageBase):
     def __init__(
         self,
-        template: str = PLUGIN_TEMPLATE,
-        dir_with_template: str = PLUGIN_DIR_NAME
-    ):
-        self.__template: str = template
-        self.__plugin_dir: str = dir_with_template
+        plugin_dir: Path,
+        pattern: str = "plugin*.py"
+    ) -> None:
+        self._plugin_dir = plugin_dir
+        self._pattern = pattern
 
-    @property
-    def path(self) -> str:
-        return str(self.__plugin_dir)
+    def get(self) -> Sequence[Path]:
+        if not self._plugin_dir.exists():
+            raise PluginStorageError(
+                f"Plugins directory does not exist: {self._plugin_dir}"
+            )
 
-    def get(self) -> str:
-        plugin_dir = Path(self.__plugin_dir).resolve()
-
-        if not plugin_dir.exists():
-            raise ValueError(f"Plugins directory does not exist: {plugin_dir}")
-
-        pattern = self.__template.lstrip("/\\")
-
-        return str(plugin_dir / pattern)
+        return list(self._plugin_dir.rglob(self._pattern))

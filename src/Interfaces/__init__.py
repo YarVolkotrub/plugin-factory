@@ -1,15 +1,13 @@
-from .IPlugin import IPlugin
-from .IPluginLoader import IPluginLoader
-from .IPluginValidator import IPluginValidator
-from .IPluginStorage import IPluginStorage
-from .IFinderPlugin import IFinderPlugin
-from src.dataclasses.BaseInfo import BaseInfo
+from .plugin import PluginBase
+from .plugin_loader import PluginLoaderBase
+from .validator import PluginValidatorBase
+from .plugin_storage import PluginStorageBase
+from .finder import PluginFinderBase
 
 __all__ = [
-    "IPlugin",
-    "IPluginLoader", 
-    "IPluginValidator",
-    "IPluginStorage",
-    "IFinderPlugin",
-    "BaseInfo"
+    "PluginBase",
+    "PluginLoaderBase",
+    "PluginValidatorBase",
+    "PluginStorageBase",
+    "PluginFinderBase",
 ]

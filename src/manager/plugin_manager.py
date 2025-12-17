@@ -2,15 +2,30 @@ import logging
 from typing import Callable
 from types import MappingProxyType
 
-from ..Interfaces.IPlugin import IPlugin
-from ..dataclasses.BaseInfo import BaseInfo
+from ..interfaces.plugin import PluginBase
+from ..dataclasses.info import InfoBase
 
 logger = logging.getLogger(__name__)
 
 
 class PluginManager:
-    def __init__(self, plugins: MappingProxyType[str, IPlugin]) -> None:
-        self.__plugins: MappingProxyType[str, IPlugin] = plugins
+    """
+    Manages plugin lifecycle.
+
+    Responsible for init, starting, stopping, and monitoring plugins.
+    """
+
+    def __init__(self, plugins: MappingProxyType[str, PluginBase]) -> None:
+        self.__plugins: MappingProxyType[str, PluginBase] = plugins
+
+    def init(self, plugin_name: str) -> None:
+        if plugin_name is None:
+            raise ValueError("plugin_name cannot be None")
+
+        if not isinstance(plugin_name, str) or not plugin_name.strip():
+            raise ValueError("plugin_name must be a non-empty string")
+
+        self.__execute(plugin_name, lambda plugin: plugin.init())
 
     def start(self, plugin_name: str) -> None:
         if plugin_name is None:
@@ -38,8 +53,8 @@ class PluginManager:
         for name in list(self.__plugins.keys()):
             self.stop(name)
 
-    def get_status(self) -> dict[str, BaseInfo]:
-        statuses: dict[str, BaseInfo] = {}
+    def get_status(self) -> dict[str, InfoBase]:
+        statuses: dict[str, InfoBase] = {}
 
         for name, plugin in self.__plugins.items():
             try:
@@ -49,7 +64,7 @@ class PluginManager:
 
         return statuses
 
-    def __get_plugin(self, plugin_name: str) -> IPlugin:
+    def __get_plugin(self, plugin_name: str) -> PluginBase:
         plugin = self.__plugins.get(plugin_name)
 
         if plugin is None:
@@ -60,7 +75,7 @@ class PluginManager:
     def __execute(
             self,
             plugin_name: str,
-            action: Callable[[IPlugin], None]
+            action: Callable[[PluginBase], None]
     ) -> None:
         try:
             plugin = self.__get_plugin(plugin_name)

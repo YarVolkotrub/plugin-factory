@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class BaseInfo:
+class InfoBase:
     """Базовая информация о плагине."""
     name: str
     state: str

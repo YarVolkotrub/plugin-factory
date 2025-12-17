@@ -1,1 +1,6 @@
-from .BaseInfo import BaseInfo
+from .info import InfoBase
+
+
+__all__ = [
+    "InfoBase"
+    ]

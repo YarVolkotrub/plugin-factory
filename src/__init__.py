@@ -1,8 +1,11 @@
-from .Interfaces import *
+from .interfaces import *
 from .Implementations import *
 from .dataclasses import *
+from .loader import *
+from .validation import *
+from .manager import *
 
-__version__ = "1.1.0"
+__version__ = "1.0.0"
 __author__ = "Yaroslav Volkotrub"
 __all__ = [
     # Implementations
@@ -10,15 +13,18 @@ __all__ = [
     "PluginLoader",
     "PluginValidator",
     "LocalStorage",
-    "FinderLocalPlugin",
+    "LocalPluginFinderBase",
 
-    # Interfaces
-    "IPlugin",
-    "IPluginLoader",
-    "IPluginValidator",
-    "IPluginStorage",
-    "IFinderPlugin",
+    # interfaces
+    "PluginBase",
+    "PluginLoader",
+    "PluginValidator",
+    "PluginStorageBase",
+    "PluginFinderBase",
+    "PluginClassFinder",
+    "ModuleImporter",
+    "PluginFactory",
 
-    # Dataclasses
-    "BaseInfo"
+    # dataclasses
+    "InfoBase"
 ]

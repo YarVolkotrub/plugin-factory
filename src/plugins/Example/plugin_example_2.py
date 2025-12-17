@@ -4,7 +4,7 @@ from src.interfaces.plugin import InfoBase
 
 class ExamplePluginBase(PluginBase):
     def __init__(self):
-        self.__name = "Example3"
+        self.__name = "Example2"
         self.__state = "stopped"
 
     @property
@@ -14,9 +14,6 @@ class ExamplePluginBase(PluginBase):
     @property
     def info(self) -> InfoBase:
         return InfoBase(name=self.__name, state=self.__state)
-
-    def init(self) -> None:
-        ...
 
     def start(self) -> None:
         self.__state = "running"
