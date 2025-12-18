@@ -6,15 +6,16 @@ project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
 from src import (
-    NewPluginManager,
+    PluginManager,
     PluginLoader,
     LocalStorage,
-    LocalPluginFinderBase,
+    LocalPluginFinder,
     PluginValidator,
     PluginClassFinder,
     ModuleImporter,
     PluginFactory
 )
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -29,7 +30,7 @@ def main():
     pattern = "plugin*.py"
 
     storage = LocalStorage(plugin_dir, pattern)
-    finder = LocalPluginFinderBase()
+    finder = LocalPluginFinder()
     validator = PluginValidator()
 
     loader = PluginLoader(
@@ -43,18 +44,18 @@ def main():
     plugins = loader.load()
 
     print(f"Loaded {len(plugins)} plugins")
-    manager = NewPluginManager(plugins)
-    status = manager.get_status()
-    print(f"Plugin statuses: {status}")
+    manager = PluginManager(plugins)
+    info = manager.get_info()
+    print(f"Plugin info: {info}")
     manager.start_all()
-    status = manager.get_status()
-    print(f"Plugin statuses: {status}")
-    print(manager.get_states())
+    info = manager.get_info()
+    print(f"Plugin info: {info}")
+    print(f"Plugin info: {manager.get_states()}")
     manager.stop_all()
-    status = manager.get_status()
-    print(f"Plugin statuses: {status}")
+    info = manager.get_info()
+    print(f"Plugin info: {info}")
 
-    print(manager.get_states())
+    print(f"Plugin info: {manager.get_states()}")
 
 if __name__ == "__main__":
     main()

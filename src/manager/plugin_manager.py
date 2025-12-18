@@ -1,93 +1,96 @@
+from __future__ import annotations
+from typing import Mapping, Callable
 import logging
-from typing import Callable
-from types import MappingProxyType
 
+from ..data.plugin_state import PluginState
 from ..interfaces.plugin import PluginBase
-from ..dataclasses.info import InfoBase
-
-logger = logging.getLogger(__name__)
+from ..data.plugin_info import InfoBase
 
 
 class PluginManager:
-    """
-    Manages plugin lifecycle.
+    def __init__(self, plugins: Mapping[str, PluginBase]) -> None:
+        if not plugins:
+            raise ValueError("plugins mapping must not be empty")
 
-    Responsible for init, starting, stopping, and monitoring plugins.
-    """
-
-    def __init__(self, plugins: MappingProxyType[str, PluginBase]) -> None:
-        self.__plugins: MappingProxyType[str, PluginBase] = plugins
-
-    def init(self, plugin_name: str) -> None:
-        if plugin_name is None:
-            raise ValueError("plugin_name cannot be None")
-
-        if not isinstance(plugin_name, str) or not plugin_name.strip():
-            raise ValueError("plugin_name must be a non-empty string")
-
-        self.__execute(plugin_name, lambda plugin: plugin.init())
+        self.__plugins: Mapping[str, PluginBase] = plugins
+        self.__states: dict[str, PluginState] = {
+            name: PluginState.INIT for name in plugins
+        }
+        self.__errors: dict[str, str | None] = {
+            name: None for name in plugins
+        }
 
     def start(self, plugin_name: str) -> None:
-        if plugin_name is None:
-            raise ValueError("plugin_name cannot be None")
-
-        if not isinstance(plugin_name, str) or not plugin_name.strip():
-            raise ValueError("plugin_name must be a non-empty string")
-
-        self.__execute(plugin_name, lambda plugin: plugin.start())
+        self.__execute(plugin_name, PluginBase.start, PluginState.STARTED)
 
     def stop(self, plugin_name: str) -> None:
-        if plugin_name is None:
-            raise ValueError("plugin_name cannot be None")
+        self.__execute(plugin_name, PluginBase.stop, PluginState.STOPPED)
 
-        if not isinstance(plugin_name, str) or not plugin_name.strip():
-            raise ValueError("plugin_name must be a non-empty string")
+    def start_all(self) -> dict[str, Exception | None]:
+        return self.__batch(self.start)
 
-        self.__execute(plugin_name, lambda plugin: plugin.stop())
+    def stop_all(self) -> dict[str, Exception | None]:
+        return self.__batch(self.stop)
 
-    def start_all(self) -> None:
-        for name in list(self.__plugins.keys()):
-            self.start(name)
-
-    def stop_all(self) -> None:
-        for name in list(self.__plugins.keys()):
-            self.stop(name)
-
-    def get_status(self) -> dict[str, InfoBase]:
-        statuses: dict[str, InfoBase] = {}
+    def get_info(self) -> dict[str, InfoBase | None]:
+        result: dict[str, InfoBase | None] = {}
 
         for name, plugin in self.__plugins.items():
             try:
-                statuses[name] = plugin.info
+                result[name] = InfoBase(
+                    name=name,
+                    state=self.__states[name],
+                    error=self.__errors[name],
+                )
             except Exception:
-                logger.exception("Failed to read status from plugin %s", name)
+                result[name] = None
 
-        return statuses
+        return result
 
-    def __get_plugin(self, plugin_name: str) -> PluginBase:
-        plugin = self.__plugins.get(plugin_name)
-
-        if plugin is None:
-            raise KeyError(f"Plugin not found: {plugin_name}")
-
-        return plugin
+    def get_states(self) -> dict[str, PluginState]:
+        return dict(self.__states)
 
     def __execute(
             self,
             plugin_name: str,
-            action: Callable[[PluginBase], None]
+            action: Callable[[PluginBase], None],
+            success_state: PluginState,
     ) -> None:
-        try:
-            plugin = self.__get_plugin(plugin_name)
-        except KeyError as e:
-            logger.error("Plugin %s not found: %s", plugin_name, e)
-            return
+        plugin = self.__get_plugin(plugin_name)
 
         try:
             action(plugin)
+            self.__states[plugin_name] = success_state
         except Exception as exc:
-            logger.exception(
-                "Action failed for plugin %s: %s",
+            self.__states[plugin_name] = PluginState.FAILED
+            self.__errors[plugin_name] = str(exc)
+            logging.exception(
+                "Action %s failed for plugin %s",
+                action.__name__,
                 plugin_name,
-                exc
             )
+            raise
+
+    def __batch(
+        self,
+        action: Callable[[str], None],
+    ) -> dict[str, Exception | None]:
+        result: dict[str, Exception | None] = {}
+
+        for name in self.__plugins:
+            try:
+                action(name)
+                result[name] = None
+            except Exception as exc:
+                result[name] = exc
+
+        return result
+
+    def __get_plugin(self, plugin_name: str) -> PluginBase:
+        if not isinstance(plugin_name, str) or not plugin_name.strip():
+            raise ValueError("plugin_name must be a non-empty string")
+
+        try:
+            return self.__plugins[plugin_name]
+        except KeyError:
+            raise KeyError(f"Plugin not found: {plugin_name}") from None

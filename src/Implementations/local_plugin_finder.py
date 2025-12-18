@@ -4,7 +4,7 @@ from typing import Sequence
 from ..interfaces.finder import PluginFinderBase
 
 
-class LocalPluginFinderBase(PluginFinderBase):
+class LocalPluginFinder(PluginFinderBase):
     def __init__(self, root_package: str = "plugins") -> None:
         self._root_package = root_package
 

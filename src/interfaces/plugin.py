@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import ClassVar
 
-from ..dataclasses.info import InfoBase
+from ..data.plugin_info import InfoBase
 
 
 class PluginBase(ABC):
