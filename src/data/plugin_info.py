@@ -4,10 +4,9 @@ from dataclasses import dataclass
 
 from .plugin_state import PluginState
 
-@dataclass
+@dataclass(frozen=True)
 class InfoBase:
     """Basic information about plugin."""
-    # name: str
     name: str
     state: PluginState
     description: str | None = None

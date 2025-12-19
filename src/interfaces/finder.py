@@ -1,15 +1,13 @@
-from abc import ABC, abstractmethod
+from typing import Sequence, Protocol
 from pathlib import Path
-from typing import Sequence
 
 
-class PluginFinderBase(ABC):
+class PluginFinderBase(Protocol):
     """
     Resolves filesystem paths to Python import paths.
     """
 
-    @abstractmethod
-    def find(self, files: Sequence[Path]) -> Sequence[str]:
+    def find(self, module: Sequence[Path]) -> Sequence[str]:
         """
         Convert a plugin file path into an importable module path.
 
