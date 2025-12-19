@@ -26,7 +26,7 @@ logging.basicConfig(
 def main():
     from pathlib import Path
 
-    plugin_dir = Path(__file__).parent / "src" / "plugins"
+    plugin_dir = Path(__file__).parent / "plugins"
     pattern = "plugin*.py"
 
     storage = LocalStorage(plugin_dir, pattern)
@@ -45,17 +45,19 @@ def main():
 
     print(f"Loaded {len(plugins)} plugins")
     manager = PluginManager(plugins)
+    manager.init_all()
     info = manager.get_info()
     print(f"Plugin info: {info}")
+    print(f"Plugin states: {manager.get_states()}")
     manager.start_all()
     info = manager.get_info()
     print(f"Plugin info: {info}")
-    print(f"Plugin info: {manager.get_states()}")
+    print(f"Plugin states: {manager.get_states()}")
     manager.stop_all()
     info = manager.get_info()
     print(f"Plugin info: {info}")
-
-    print(f"Plugin info: {manager.get_states()}")
+    manager.start("Example0")
+    print(f"Plugin states: {manager.get_states()}")
 
 if __name__ == "__main__":
     main()

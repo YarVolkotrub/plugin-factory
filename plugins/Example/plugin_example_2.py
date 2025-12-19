@@ -2,26 +2,25 @@ from src.interfaces.plugin import PluginBase
 from src.interfaces.plugin import InfoBase
 
 
-class ExamplePluginBase(PluginBase):
+class ExamplePlugin2(PluginBase):
+    """Test plugin 2"""
+
     def __init__(self):
         self.__name = "Example2"
-        self.__state = "stopped"
 
     @property
     def name(self) -> str:
         return self.__name
 
     @property
-    def info(self) -> InfoBase:
-        return InfoBase(name=self.__name, state=self.__state)
+    def info(self) -> type[InfoBase]:
+        return InfoBase
 
     def init(self) -> None:
-        ...
+        print(f"Example init {self.__name}")
 
     def start(self) -> None:
-        self.__state = "running"
-        print("Example started")
+        print(f"Example started {self.__name}")
 
     def stop(self) -> None:
-        self.__state = "stopped"
-        print("Example stopped")
+        print(f"Example stopped {self.__name}")
