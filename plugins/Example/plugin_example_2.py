@@ -17,10 +17,10 @@ class ExamplePlugin2(PluginBase):
         return InfoBase
 
     def init(self) -> None:
-        print(f"Example init {self.__name}")
+        ...
 
     def start(self) -> None:
-        print(f"Example started {self.__name}")
+        ...
 
     def stop(self) -> None:
-        print(f"Example stopped {self.__name}")
+        ...

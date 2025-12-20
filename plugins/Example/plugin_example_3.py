@@ -2,11 +2,11 @@ from src.interfaces.plugin import PluginBase
 from src.interfaces.plugin import InfoBase
 
 
-class ExamplePlugin0(PluginBase):
-    """Test plugin 0"""
+class ExamplePlugin2(PluginBase):
+    """Test plugin duplicate of 'ExamplePlugin2'."""
 
     def __init__(self):
-        self.__name = "Example0"
+        self.__name = "Example2"
 
     @property
     def name(self) -> str:

@@ -7,7 +7,7 @@ class PluginFinderBase(Protocol):
     Resolves filesystem paths to Python import paths.
     """
 
-    def find(self, module: Sequence[Path]) -> Sequence[str]:
+    def find(self, module: Sequence[Path]) -> Sequence[Path]:
         """
         Convert a plugin file path into an importable module path.
 

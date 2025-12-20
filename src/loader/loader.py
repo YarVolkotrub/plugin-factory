@@ -33,10 +33,11 @@ class PluginLoader(PluginLoaderBase):
         self._class_finder = class_finder
         self._factory = factory
         self._plugins: dict[str, PluginBase] = {}
+        logger.debug(f"init {__class__.__name__}")
 
     def load(self) -> MappingProxyType[str, PluginBase]:
         files: Sequence[Path] = self._storage.get()
-        import_paths = self._finder.find(files)
+        import_paths: Sequence[Path] = self._finder.find(files)
 
         for path in import_paths:
             module: ModuleType | None = self._importer.import_module(path)
@@ -44,7 +45,7 @@ class PluginLoader(PluginLoaderBase):
             if module is None:
                 continue
 
-            classes: Sequence[str] = self._class_finder.find(module)
+            classes: Sequence[ModuleType] = self._class_finder.find(module)
 
             for cls in classes:
                 instance = self._factory.create(cls)

@@ -3,10 +3,10 @@ from src.interfaces.plugin import InfoBase
 
 
 class ExamplePlugin1(PluginBase):
-    """Test plugin 1"""
+    """Test plugin is not a subclass of 'PluginBase'"""
 
     def __init__(self):
-        self.__name = "Example1"
+        self.__name = "Example"
 
     @property
     def name(self) -> str:
@@ -17,10 +17,7 @@ class ExamplePlugin1(PluginBase):
         return InfoBase
 
     def init(self) -> None:
-        print(f"Example init {self.__name}")
+        ...
 
     def start(self) -> None:
-        print(f"Example started {self.__name}")
-
-    def stop(self) -> None:
-        print(f"Example stopped {self.__name}")
+        ...

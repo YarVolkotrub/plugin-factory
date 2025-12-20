@@ -1,10 +1,13 @@
 from __future__ import annotations
 from typing import Mapping
+import logging
 
 from ..data.plugin_state import PluginState
 from ..interfaces.plugin import PluginBase
 from ..data.plugin_info import InfoBase
 from ..data.plugin_action import PluginAction
+
+logger = logging.getLogger(__name__)
 
 
 class PluginManager:
@@ -27,26 +30,40 @@ class PluginManager:
         self.__errors: dict[str, Exception | None] = {
             name: None for name in plugins
         }
+        logger.debug(f"init {__class__.__name__}")
+
 
     def init_all(self) -> None:
+        logger.debug("init all called")
+
         for plugin_name in self.__plugins.keys():
             self.__execute(plugin_name, PluginAction.INITIALIZED, PluginState.INITIALIZED)
 
     def start(self, plugin_name: str) -> None:
+        logger.debug("start called")
+
         self.__execute(plugin_name, PluginAction.STARTED, PluginState.STARTED)
 
     def stop(self, plugin_name: str) -> None:
+        logger.debug("stop called")
+
         self.__execute(plugin_name, PluginAction.STOPPED, PluginState.STOPPED)
 
     def start_all(self) ->  None:
+        logger.debug("start all called")
+
         for plugin_name in self.__plugins:
             self.__execute(plugin_name, PluginAction.STARTED, PluginState.STARTED)
 
     def stop_all(self) -> None:
+        logger.debug("stop all called")
+
         for plugin_name in self.__plugins:
             self.__execute(plugin_name, PluginAction.STOPPED, PluginState.STOPPED)
 
     def get_info(self) -> dict[str, InfoBase | None]:
+        logger.debug("get info called")
+
         result: dict[str, InfoBase | None] = {}
 
         for name, plugin in self.__plugins.items():
@@ -74,6 +91,8 @@ class PluginManager:
             action_name: str,
             success_state: PluginState,
     ) -> None:
+        logger.info(f"Plugin '{plugin_name}' - {action_name}")
+
         self.__check_transition(plugin_name, action_name)
         plugin = self.__get_plugin(plugin_name)
         method = getattr(plugin, action_name, None)
@@ -86,9 +105,11 @@ class PluginManager:
         try:
             getattr(plugin, action_name)()
             self.__states[plugin_name] = success_state
+            logger.debug(f"Plugin '{plugin_name}' - {action_name} - success")
         except Exception as exc:
             self.__states[plugin_name] = PluginState.FAILED
             self.__errors[plugin_name] = exc
+            logger.debug(f"Plugin '{plugin_name}' - {action_name} - failed")
             raise
 
     def __get_plugin(self, plugin_name: str) -> PluginBase:

@@ -1,8 +1,12 @@
 from pathlib import Path
 from typing import Sequence
+import logging
 
 from ..interfaces.plugin_storage import PluginStorageBase
 from ..exceptions import PluginStorageError
+
+logger = logging.getLogger(__name__)
+
 
 class LocalStorage(PluginStorageBase):
     def __init__(
@@ -12,6 +16,7 @@ class LocalStorage(PluginStorageBase):
     ) -> None:
         self._plugin_dir = plugin_dir
         self._pattern = pattern
+        logger.debug(f"init {__class__.__name__}")
 
     def get(self) -> Sequence[Path]:
         if not self._plugin_dir.exists():
