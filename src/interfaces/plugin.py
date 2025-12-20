@@ -18,12 +18,27 @@ class PluginBase(ABC):
 
     @abstractmethod
     def init(self) -> None:
-        """Prepare plugin (config, resources)."""
+        """
+        Preconditions:
+            - plugin is CREATED or STOPPED
+        Postconditions:
+            - plugin enters INITIALIZED state
+        """
 
     @abstractmethod
     def start(self) -> None:
-        """Start plugin work."""
+        """
+        Preconditions:
+            - plugin is INITIALIZED
+        Postconditions:
+            - plugin enters RUNNING state
+        """
 
     @abstractmethod
     def stop(self) -> None:
-        """Stop plugin and release resources."""
+        """
+        Preconditions:
+            - plugin is RUNNING
+        Postconditions:
+            - plugin enters STOPPING state
+        """

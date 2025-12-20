@@ -2,7 +2,7 @@ from enum import Enum, auto
 
 
 class PluginState(Enum):
-    CREATED = auto()   # объект создан
+    CREATED = auto()
     INITIALIZED = auto()
     STARTED = auto()
     STOPPED = auto()

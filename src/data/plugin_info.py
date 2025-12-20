@@ -10,4 +10,4 @@ class InfoBase:
     name: str
     state: PluginState
     description: str | None = None
-    error: str | None = None
+    error: Exception | None = None

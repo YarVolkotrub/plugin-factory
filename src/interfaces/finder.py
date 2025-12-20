@@ -16,5 +16,6 @@ class PluginFinderBase(Protocol):
 
         Returns:
             Fully-qualified import path.
+            :param module:
         """
         raise NotImplementedError

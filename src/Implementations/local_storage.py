@@ -8,7 +8,7 @@ class LocalStorage(PluginStorageBase):
     def __init__(
         self,
         plugin_dir: Path,
-        pattern: str = "plugin*.py"
+        pattern: str
     ) -> None:
         self._plugin_dir = plugin_dir
         self._pattern = pattern

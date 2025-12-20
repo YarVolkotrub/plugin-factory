@@ -4,14 +4,15 @@ from typing import Mapping
 from ..data.plugin_state import PluginState
 from ..interfaces.plugin import PluginBase
 from ..data.plugin_info import InfoBase
+from ..data.plugin_action import PluginAction
 
 
 class PluginManager:
     ALLOWED_TRANSITIONS: dict[PluginState, set[str]] = {
-        PluginState.CREATED: {"init"},
-        PluginState.INITIALIZED: {"start"},
-        PluginState.STARTED: {"stop"},
-        PluginState.STOPPED: {"init", "start"},
+        PluginState.CREATED: {PluginAction.INITIALIZED},
+        PluginState.INITIALIZED: {PluginAction.STARTED},
+        PluginState.STARTED: {PluginAction.STOPPED},
+        PluginState.STOPPED: {PluginAction.INITIALIZED, PluginAction.STARTED},
         PluginState.FAILED: set(),
     }
 
@@ -23,27 +24,27 @@ class PluginManager:
         self.__states: dict[str, PluginState] = {
             name: PluginState.CREATED for name in plugins
         }
-        self.__errors: dict[str, str | None] = {
+        self.__errors: dict[str, Exception | None] = {
             name: None for name in plugins
         }
 
     def init_all(self) -> None:
         for plugin_name in self.__plugins.keys():
-            self.__execute(plugin_name, "init", PluginState.INITIALIZED)
+            self.__execute(plugin_name, PluginAction.INITIALIZED, PluginState.INITIALIZED)
 
     def start(self, plugin_name: str) -> None:
-        self.__execute(plugin_name, "start", PluginState.STARTED)
+        self.__execute(plugin_name, PluginAction.STARTED, PluginState.STARTED)
 
     def stop(self, plugin_name: str) -> None:
-        self.__execute(plugin_name, "stop", PluginState.STOPPED)
+        self.__execute(plugin_name, PluginAction.STOPPED, PluginState.STOPPED)
 
     def start_all(self) ->  None:
         for plugin_name in self.__plugins:
-            self.__execute(plugin_name, "start", PluginState.STARTED)
+            self.__execute(plugin_name, PluginAction.STARTED, PluginState.STARTED)
 
     def stop_all(self) -> None:
         for plugin_name in self.__plugins:
-            self.__execute(plugin_name, "stop", PluginState.STOPPED)
+            self.__execute(plugin_name, PluginAction.STOPPED, PluginState.STOPPED)
 
     def get_info(self) -> dict[str, InfoBase | None]:
         result: dict[str, InfoBase | None] = {}
@@ -55,8 +56,12 @@ class PluginManager:
                     state=self.__states[name],
                     error=self.__errors[name],
                 )
-            except Exception:
-                result[name] = None
+            except Exception as exc:
+                result[name] = InfoBase(
+                    name=name,
+                    state=self.__states[name],
+                    error=exc,
+                )
 
         return result
 
@@ -69,10 +74,11 @@ class PluginManager:
             action_name: str,
             success_state: PluginState,
     ) -> None:
-        self._check_transition(plugin_name, action_name)
+        self.__check_transition(plugin_name, action_name)
         plugin = self.__get_plugin(plugin_name)
+        method = getattr(plugin, action_name, None)
 
-        if not hasattr(plugin, action_name):
+        if method is None:
             raise AttributeError(
                 f"Plugin '{plugin_name}' has no method '{action_name}'"
             )
@@ -82,7 +88,7 @@ class PluginManager:
             self.__states[plugin_name] = success_state
         except Exception as exc:
             self.__states[plugin_name] = PluginState.FAILED
-            self.__errors[plugin_name] = str(exc)
+            self.__errors[plugin_name] = exc
             raise
 
     def __get_plugin(self, plugin_name: str) -> PluginBase:
@@ -94,7 +100,7 @@ class PluginManager:
         except KeyError:
             raise KeyError(f"Plugin not found: {plugin_name}") from None
 
-    def _check_transition(
+    def __check_transition(
             self,
             plugin_name: str,
             action: str,

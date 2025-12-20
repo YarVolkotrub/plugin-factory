@@ -1,7 +1,7 @@
 from __future__ import annotations
 import logging
 from types import MappingProxyType, ModuleType
-from typing import Sequence, Type
+from typing import Sequence
 from pathlib import Path
 
 from ..interfaces.plugin import PluginBase
