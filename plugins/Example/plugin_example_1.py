@@ -1,5 +1,5 @@
 from src.interfaces.plugin import PluginBase
-from src.interfaces.plugin import InfoBase
+from src.interfaces.plugin import PluginInfo
 
 
 class ExamplePlugin1(PluginBase):
@@ -13,8 +13,8 @@ class ExamplePlugin1(PluginBase):
         return self.__name
 
     @property
-    def info(self) -> type[InfoBase]:
-        return InfoBase
+    def info(self) -> type[PluginInfo]:
+        return PluginInfo
 
     def init(self) -> None:
         ...

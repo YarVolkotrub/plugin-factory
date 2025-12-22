@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import ClassVar
 
-from ..data.plugin_info import InfoBase
+from ..data.plugin_info import PluginInfo
 
 
 class PluginBase(ABC):
@@ -13,17 +13,21 @@ class PluginBase(ABC):
 
     @property
     @abstractmethod
-    def info(self) -> InfoBase:
+    def info(self) -> PluginInfo:
         """Prepare information about plugin."""
 
     @abstractmethod
     def init(self) -> None:
         """
+        Prepare plugin for execution.
+
         Preconditions:
             - plugin is CREATED or STOPPED
         Postconditions:
             - plugin enters INITIALIZED state
         """
+
+        raise NotImplementedError
 
     @abstractmethod
     def start(self) -> None:

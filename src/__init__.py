@@ -2,10 +2,10 @@ from .interfaces import *
 from .implementations import *
 from .data import *
 from .loader import *
-from .validation import *
+from .validators import *
 from .manager import *
 
-__version__ = "1.0.0"
+__version__ = "0.5.0"
 __author__ = "Yaroslav Volkotrub"
 __all__ = [
     # implementations
@@ -28,10 +28,10 @@ __all__ = [
     # manager
     "PluginManager",
 
-    # validation
+    # validators
     "PluginValidator",
 
     # data
-    "InfoBase",
+    "PluginInfo",
     "PluginState",
 ]

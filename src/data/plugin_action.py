@@ -6,6 +6,14 @@ from typing import Final
 
 @dataclass(frozen=True)
 class PluginAction:
-    INITIALIZED: Final[str] = "init"
-    STARTED: Final[str] = "start"
-    STOPPED: Final[str] = "stop"
+    INIT = "init"
+    START = "start"
+    STOP = "stop"
+
+    @property
+    def required(self) -> bool:
+        return self in {
+            PluginAction.INIT,
+            PluginAction.START,
+            PluginAction.STOP,
+        }

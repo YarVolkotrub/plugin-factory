@@ -4,7 +4,7 @@ import logging
 
 from ..data.plugin_state import PluginState
 from ..interfaces.plugin import PluginBase
-from ..data.plugin_info import InfoBase
+from ..data.plugin_info import PluginInfo
 from ..data.plugin_action import PluginAction
 
 logger = logging.getLogger(__name__)
@@ -12,10 +12,10 @@ logger = logging.getLogger(__name__)
 
 class PluginManager:
     ALLOWED_TRANSITIONS: dict[PluginState, set[str]] = {
-        PluginState.CREATED: {PluginAction.INITIALIZED},
-        PluginState.INITIALIZED: {PluginAction.STARTED},
-        PluginState.STARTED: {PluginAction.STOPPED},
-        PluginState.STOPPED: {PluginAction.INITIALIZED, PluginAction.STARTED},
+        PluginState.CREATED: {PluginAction.INIT},
+        PluginState.INITIALIZED: {PluginAction.START},
+        PluginState.STARTED: {PluginAction.STOP},
+        PluginState.STOPPED: {PluginAction.INIT, PluginAction.START},
         PluginState.FAILED: set(),
     }
 
@@ -37,44 +37,44 @@ class PluginManager:
         logger.debug("init all called")
 
         for plugin_name in self.__plugins.keys():
-            self.__execute(plugin_name, PluginAction.INITIALIZED, PluginState.INITIALIZED)
+            self.__execute(plugin_name, PluginAction.INIT, PluginState.INITIALIZED)
 
     def start(self, plugin_name: str) -> None:
         logger.debug("start called")
 
-        self.__execute(plugin_name, PluginAction.STARTED, PluginState.STARTED)
+        self.__execute(plugin_name, PluginAction.START, PluginState.STARTED)
 
     def stop(self, plugin_name: str) -> None:
         logger.debug("stop called")
 
-        self.__execute(plugin_name, PluginAction.STOPPED, PluginState.STOPPED)
+        self.__execute(plugin_name, PluginAction.STOP, PluginState.STOPPED)
 
     def start_all(self) ->  None:
         logger.debug("start all called")
 
         for plugin_name in self.__plugins:
-            self.__execute(plugin_name, PluginAction.STARTED, PluginState.STARTED)
+            self.__execute(plugin_name, PluginAction.START, PluginState.STARTED)
 
     def stop_all(self) -> None:
         logger.debug("stop all called")
 
         for plugin_name in self.__plugins:
-            self.__execute(plugin_name, PluginAction.STOPPED, PluginState.STOPPED)
+            self.__execute(plugin_name, PluginAction.STOP, PluginState.STOPPED)
 
-    def get_info(self) -> dict[str, InfoBase | None]:
+    def get_info(self) -> dict[str, PluginInfo | None]:
         logger.debug("get info called")
 
-        result: dict[str, InfoBase | None] = {}
+        result: dict[str, PluginInfo | None] = {}
 
         for name, plugin in self.__plugins.items():
             try:
-                result[name] = InfoBase(
+                result[name] = PluginInfo(
                     name=name,
                     state=self.__states[name],
                     error=self.__errors[name],
                 )
             except Exception as exc:
-                result[name] = InfoBase(
+                result[name] = PluginInfo(
                     name=name,
                     state=self.__states[name],
                     error=exc,

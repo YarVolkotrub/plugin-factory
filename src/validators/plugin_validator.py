@@ -6,6 +6,10 @@ logger = logging.getLogger(__name__)
 
 
 class PluginValidator(PluginValidatorBase):
+    """
+    This validator checks structural plugin contract only.
+    It does not validate lifecycle order or runtime state.
+    """
     def is_valid(self, instance: PluginBase, plugins: dict[str, PluginBase]) -> bool:
         name = getattr(instance, "name", None)
 

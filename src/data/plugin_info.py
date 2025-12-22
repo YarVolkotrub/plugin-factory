@@ -5,9 +5,9 @@ from dataclasses import dataclass
 from .plugin_state import PluginState
 
 @dataclass(frozen=True)
-class InfoBase:
+class PluginInfo:
     """Basic information about plugin."""
     name: str
-    state: PluginState
-    description: str | None = None
-    error: Exception | None = None
+    state: PluginState = None
+    description: str = None
+    error: Exception = None
