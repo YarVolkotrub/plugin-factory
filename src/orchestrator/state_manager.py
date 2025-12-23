@@ -4,16 +4,16 @@ from functools import lru_cache
 from typing import Mapping, ClassVar
 import logging
 
-from ..data.plugin_state import PluginState
-from ..interfaces.plugin import PluginBase
-from ..data.plugin_info import PluginInfo
-from ..data.plugin_action import PluginAction
-from ..data.plugin_constants import PluginConstants
+from src.domain.plugin_state import PluginState
+from src.domain.plugin import PluginBase
+from src.domain.plugin_info import PluginInfo
+from src.domain.plugin_action import PluginAction
+from src.domain.plugin_constants import PluginConstants
 
 logger = logging.getLogger(__name__)
 
 
-class PluginManager:
+class PluginStateManager:
     _ALLOWED_TRANSITIONS: ClassVar[
         Mapping[
             PluginState,
@@ -22,6 +22,8 @@ class PluginManager:
     ] = PluginConstants.ALLOWED_TRANSITIONS
 
     def __init__(self, plugins: Mapping[str, PluginBase]) -> None:
+        logger.debug(f"init {__class__.__name__}")
+
         if not plugins:
             raise ValueError("plugins mapping must not be empty")
 
@@ -34,42 +36,40 @@ class PluginManager:
 
         self.__plugin_names: tuple[str, ...] = tuple(self.__plugins.keys())
 
-        logger.debug(f"init {__class__.__name__}")
-
     @staticmethod
     @lru_cache(maxsize=6)
     def __get_allowed_actions(state: PluginState) -> frozenset[PluginAction]:
-        return PluginManager._ALLOWED_TRANSITIONS.get(state, frozenset())
+        return PluginStateManager._ALLOWED_TRANSITIONS.get(state, frozenset())
 
-    def init_all(self) -> None:
+    def init_all_plugin(self) -> None:
         logger.debug("init all called")
 
         for plugin_name in self.__plugin_names:
-            self.__execute(plugin_name, PluginAction.INIT, PluginState.INITIALIZED)
+            self.__perform_transition(plugin_name, PluginAction.INIT, PluginState.INITIALIZED)
 
-    def start(self, plugin_name: str) -> None:
+    def start_plugin(self, plugin_name: str) -> None:
         logger.debug("start called")
 
-        self.__execute(plugin_name, PluginAction.START, PluginState.STARTED)
+        self.__perform_transition(plugin_name, PluginAction.START, PluginState.STARTED)
 
-    def stop(self, plugin_name: str) -> None:
+    def stop_plugin(self, plugin_name: str) -> None:
         logger.debug("stop called")
 
-        self.__execute(plugin_name, PluginAction.STOP, PluginState.STOPPED)
+        self.__perform_transition(plugin_name, PluginAction.STOP, PluginState.STOPPED)
 
-    def start_all(self) ->  None:
+    def start_all_plugin(self) ->  None:
         logger.debug("start all called")
 
         for plugin_name in self.__plugin_names:
-            self.__execute(plugin_name, PluginAction.START, PluginState.STARTED)
+            self.__perform_transition(plugin_name, PluginAction.START, PluginState.STARTED)
 
-    def stop_all(self) -> None:
+    def stop_all_plugin(self) -> None:
         logger.debug("stop all called")
 
         for plugin_name in self.__plugin_names:
-            self.__execute(plugin_name, PluginAction.STOP, PluginState.STOPPED)
+            self.__perform_transition(plugin_name, PluginAction.STOP, PluginState.STOPPED)
 
-    def get_info(self) -> dict[str, PluginInfo | None]:
+    def get_plugin_info(self) -> dict[str, PluginInfo | None]:
         logger.debug("get info called")
 
         result: dict[str, PluginInfo | None] = {}
@@ -90,37 +90,37 @@ class PluginManager:
 
         return result
 
-    def get_states(self) -> dict[str, PluginState]:
+    def get_plugin_states(self) -> dict[str, PluginState]:
         return dict(self.__states)
 
-    def __execute(
+    def __perform_transition(
             self,
             plugin_name: str,
-            action_name: str,
-            success_state: PluginState,
+            action: str,
+            target_state: PluginState,
     ) -> None:
-        logger.info(f"Plugin '{plugin_name}' - {action_name}")
+        logger.info(f"Plugin '{plugin_name}' - {action}")
 
-        if self.__can_transition(plugin_name, action_name):
-            logger.error(f"Plugin '{plugin_name}' - {action_name} - failed")
+        if self.__is_transition_allowed(plugin_name, action):
+            logger.error(f"Plugin '{plugin_name}' - {action} - failed")
             return
 
         plugin = self.__get_plugin(plugin_name)
-        method = getattr(plugin, action_name, None)
+        method = getattr(plugin, action, None)
 
         if method is None:
             raise AttributeError(
-                f"Plugin '{plugin_name}' has no method '{action_name}'"
+                f"Plugin '{plugin_name}' has no method '{action}'"
             )
 
         try:
-            getattr(plugin, action_name)()
-            self.__states[plugin_name] = success_state
-            logger.debug(f"Plugin '{plugin_name}' - {action_name} - success")
+            getattr(plugin, action)()
+            self.__states[plugin_name] = target_state
+            logger.debug(f"Plugin '{plugin_name}' - {action} - success")
         except Exception as exc:
             self.__states[plugin_name] = PluginState.FAILED
             self.__errors[plugin_name] = exc
-            logger.debug(f"Plugin '{plugin_name}' - {action_name} - failed")
+            logger.debug(f"Plugin '{plugin_name}' - {action} - failed")
             raise
 
     def __get_plugin(self, plugin_name: str) -> PluginBase:
@@ -132,7 +132,7 @@ class PluginManager:
         except KeyError:
             raise KeyError(f"Plugin not found: {plugin_name}") from None
 
-    def __can_transition(
+    def __is_transition_allowed(
             self,
             plugin_name: str,
             action: str,

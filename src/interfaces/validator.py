@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Protocol
 
 if TYPE_CHECKING:
-    from .plugin import PluginBase
+    from src.domain.plugin import PluginBase
 
 
 class PluginValidatorBase(Protocol):

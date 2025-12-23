@@ -2,21 +2,22 @@ from pathlib import Path
 from typing import Sequence
 import logging
 
-from ..interfaces.plugin_storage import PluginStorageBase
-from ..exceptions import PluginStorageError
+from src.interfaces.plugin_storage import PluginStorageBase
+from src.exceptions import PluginStorageError
 
 logger = logging.getLogger(__name__)
 
 
-class LocalStorage(PluginStorageBase):
+class DirectoryPluginStorage(PluginStorageBase):
     def __init__(
         self,
         plugin_dir: Path,
         pattern: str
     ) -> None:
+        logger.debug(f"init {__class__.__name__}")
+
         self._plugin_dir = plugin_dir
         self._pattern = pattern
-        logger.debug(f"init {__class__.__name__}")
 
     def get_files(self) -> Sequence[Path]:
         if not self._plugin_dir.exists():

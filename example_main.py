@@ -6,13 +6,13 @@ project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
 from src import (
-    PluginManager,
+    PluginStateManager,
     PluginLoader,
-    LocalStorage,
-    LocalPluginFinder,
-    PluginValidator,
-    PluginClassFinder,
-    ModuleImporter,
+    DirectoryPluginStorage,
+    ModulePathFinder,
+    StructuralPluginValidator,
+    PluginClassScanner,
+    PluginModuleImporter,
     PluginFactory
 )
 
@@ -28,29 +28,29 @@ def main():
     plugin_dir = Path(__file__).parent / "plugins"
     pattern = "plugin*.py"
 
-    storage = LocalStorage(plugin_dir, pattern)
-    finder = LocalPluginFinder()
-    validator = PluginValidator()
+    storage = DirectoryPluginStorage(plugin_dir, pattern)
+    finder = ModulePathFinder()
+    validator = StructuralPluginValidator()
 
     loader = PluginLoader(
         storage=storage,
         finder=finder,
         validator=validator,
-        importer=ModuleImporter(),
-        class_finder=PluginClassFinder(),
+        importer=PluginModuleImporter(),
+        class_finder=PluginClassScanner(),
         factory=PluginFactory(),
     )
     plugins = loader.load()
 
-    manager = PluginManager(plugins)
-    manager.init_all()
-    manager.get_info()
-    manager.start_all()
-    manager.get_info()
-    manager.stop_all()
-    manager.get_info()
-    manager.start("Example0")
-    manager.start("Example0")
+    manager = PluginStateManager(plugins)
+    manager.init_all_plugin()
+    manager.get_plugin_info()
+    manager.start_all_plugin()
+    manager.get_plugin_info()
+    manager.stop_all_plugin()
+    manager.get_plugin_info()
+    manager.start_plugin("Example0")
+    manager.start_plugin("Example0")
 
 if __name__ == "__main__":
     main()

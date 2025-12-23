@@ -114,6 +114,6 @@ cython_debug/
 .ruff_cache/
 
 .pypirc
-src/validators/plugin_contract_validate.py
-src/validators/plugin_contract_validator.py
+src/validation/plugin_contract_validate.py
+src/validation/plugin_contract_validator.py
 src/lifecycle

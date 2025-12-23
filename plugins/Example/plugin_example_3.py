@@ -1,5 +1,5 @@
-from src.interfaces.plugin import PluginBase
-from src.interfaces.plugin import PluginInfo
+from src.domain.plugin import PluginBase
+from src.domain.plugin import PluginInfo
 
 
 class ExamplePlugin2(PluginBase):

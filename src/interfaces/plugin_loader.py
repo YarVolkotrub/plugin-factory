@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from types import MappingProxyType
 
 if TYPE_CHECKING:
-    from .plugin import PluginBase
+    from src.domain.plugin import PluginBase
 
 
 class PluginLoaderBase(ABC):

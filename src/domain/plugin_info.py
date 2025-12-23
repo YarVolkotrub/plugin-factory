@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import Optional
 from dataclasses import dataclass, field
 
-from .plugin_state import PluginState
+from src.domain.plugin_state import PluginState
 
 @dataclass(frozen=True, slots=True)
 class PluginInfo:
