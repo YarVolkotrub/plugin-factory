@@ -16,7 +16,6 @@ from src import (
     PluginFactory
 )
 
-
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
@@ -51,6 +50,7 @@ def main():
     manager.stop_all()
     manager.get_info()
     manager.start("Example0")
+
 
 if __name__ == "__main__":
     main()

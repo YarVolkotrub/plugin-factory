@@ -10,11 +10,11 @@ logger = logging.getLogger(__name__)
 
 
 class ModuleImporter:
-    def import_module(self, import_path: Path) -> ModuleType | None:
+    def import_module(self, plugin: str) -> ModuleType | None:
         try:
-            module = import_module(import_path)
-            logger.debug(f"Plugin '{import_path}' import - success")
+            module = import_module(plugin)
+            logger.debug(f"Plugin '{plugin}' import - success")
             return module
         except Exception as exc:
-            logger.error(f"Plugin '{import_path}' import - failed")
-            raise PluginImportError(import_path) from exc
+            logger.error(f"Plugin '{plugin}' import - failed")
+            raise PluginImportError(plugin) from exc

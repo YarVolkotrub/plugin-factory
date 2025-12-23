@@ -1,7 +1,7 @@
 from __future__ import annotations
 import logging
 from types import MappingProxyType, ModuleType
-from typing import Sequence
+from typing import Sequence, Type
 from pathlib import Path
 
 from ..interfaces.plugin import PluginBase
@@ -36,26 +36,28 @@ class PluginLoader(PluginLoaderBase):
         logger.debug(f"init {__class__.__name__}")
 
     def load(self) -> MappingProxyType[str, PluginBase]:
-        files: Sequence[Path] = self._storage.get()
-        import_paths: Sequence[Path] = self._finder.find(files)
+        files: Sequence[Path] = self._storage.get_files()
+        plugins: Sequence[str] = self._finder.get(files)
 
-        for path in import_paths:
-            module: ModuleType | None = self._importer.import_module(path)
+        for plugin in plugins:
+            module: ModuleType | None = self._importer.import_module(plugin)
 
             if module is None:
                 continue
 
-            classes: Sequence[ModuleType] = self._class_finder.find(module)
+            cls: Type[PluginBase] | None = self._class_finder.get(module)
 
-            for cls in classes:
-                instance = self._factory.create(cls)
+            if cls is None:
+                continue
 
-                if instance is None:
-                    continue
+            instance = self._factory.create(cls)
 
-                if not self._validator.is_valid(instance, self._plugins):
-                    continue
+            if instance is None:
+                continue
 
-                self._plugins[instance.name] = instance
+            if not self._validator.is_valid(instance, self._plugins):
+                continue
+
+            self._plugins[instance.name] = instance
 
         return MappingProxyType(self._plugins)

@@ -18,10 +18,12 @@ class LocalStorage(PluginStorageBase):
         self._pattern = pattern
         logger.debug(f"init {__class__.__name__}")
 
-    def get(self) -> Sequence[Path]:
+    def get_files(self) -> Sequence[Path]:
         if not self._plugin_dir.exists():
             raise PluginStorageError(
                 f"Plugins directory does not exist: {self._plugin_dir}"
             )
 
-        return list(self._plugin_dir.rglob(self._pattern))
+        files: list[Path] = list(self._plugin_dir.rglob(self._pattern))
+
+        return files

@@ -5,7 +5,7 @@ from typing import Sequence
 
 class PluginStorageBase(ABC):
     @abstractmethod
-    def get(self) -> Sequence[Path]:
+    def get_files(self) -> Sequence[Path]:
         """
         Filesystem-based plugin storage.
 

@@ -1,48 +1,38 @@
+from __future__ import annotations
+
 from abc import ABC, abstractmethod
-from typing import ClassVar
 
 from ..data.plugin_info import PluginInfo
 
 
 class PluginBase(ABC):
     """
-    Base interface for all plugins.
+    Базовый контракт плагина.
+
+    Менеджер НИКОГДА не вызывает ничего,
+    кроме этих методов.
     """
 
-    name: ClassVar[str]
-
-    @property
-    @abstractmethod
-    def info(self) -> PluginInfo:
-        """Prepare information about plugin."""
+    info: PluginInfo
 
     @abstractmethod
     def init(self) -> None:
         """
-        Prepare plugin for execution.
-
-        Preconditions:
-            - plugin is CREATED or STOPPED
-        Postconditions:
-            - plugin enters INITIALIZED state
+        Подготовка плагина.
+        Повторный вызов допускается только после STOP.
         """
-
         raise NotImplementedError
 
     @abstractmethod
     def start(self) -> None:
         """
-        Preconditions:
-            - plugin is INITIALIZED
-        Postconditions:
-            - plugin enters RUNNING state
+        Запуск основной логики плагина.
         """
+        raise NotImplementedError
 
     @abstractmethod
     def stop(self) -> None:
         """
-        Preconditions:
-            - plugin is RUNNING
-        Postconditions:
-            - plugin enters STOPPING state
+        Остановка и освобождение ресурсов.
         """
+        raise NotImplementedError

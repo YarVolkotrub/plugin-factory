@@ -12,8 +12,8 @@ class LocalPluginFinder(PluginFinderBase):
         self._root_package = root_package
         logger.debug(f"init {__class__.__name__}")
 
-    def find(self, files: Sequence[Path]) -> Sequence[str]:
-        result: list[str] = []
+    def get(self, files: Sequence[Path]) -> Sequence[str]:
+        module_names: list[str] = []
 
         for file in files:
             module = file.with_suffix("")
@@ -25,6 +25,6 @@ class LocalPluginFinder(PluginFinderBase):
                 continue
 
             import_path = ".".join(parts[idx:])
-            result.append(import_path)
+            module_names.append(import_path)
 
-        return result
+        return module_names

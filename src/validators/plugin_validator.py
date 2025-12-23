@@ -11,17 +11,22 @@ class PluginValidator(PluginValidatorBase):
     It does not validate lifecycle order or runtime state.
     """
     def is_valid(self, instance: PluginBase, plugins: dict[str, PluginBase]) -> bool:
-        name = getattr(instance, "name", None)
+        try:
+            name = instance.name
+        except AttributeError:
+            logger.warning("Plugin missing 'name' attribute")
+            return False
 
-        if not isinstance(name, str) or not name:
-            logger.warning(
-                "Plugin %s returned invalid name: %r",
-                instance.__class__.__name__,
-                name
-            )
+        if not isinstance(name, str):
+            logger.warning("Plugin name must be string")
+            return False
+
+        name = name.strip()
+        if not name:
+            logger.warning("Plugin name cannot be empty")
             return False
 
         if name in plugins:
-            logger.warning("Duplicate plugin name %s; skipping", name)
+            logger.warning("Duplicate plugin %s", name)
             return False
         return True

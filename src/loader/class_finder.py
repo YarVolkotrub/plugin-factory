@@ -9,19 +9,20 @@ from ..interfaces.finder import PluginFinderBase
 logger = logging.getLogger(__name__)
 
 
-class PluginClassFinder(PluginFinderBase):
-    def find(self, module: ModuleType) -> Sequence[ModuleType]:
-        result = []
-
+class PluginClassFinder:
+    def get(self, module: ModuleType) -> ModuleType | None:
         for _, obj in inspect.getmembers(module, inspect.isclass):
+            if getattr(obj, '__module__', None) != module.__name__:
+                continue
+
             if (
                     issubclass(obj, PluginBase)
                     and obj is not PluginBase
                     and not inspect.isabstract(obj)
             ):
-                result.append(obj)
-                logger.debug(f"Plugin '{obj.__name__}' found - {obj}")
+
+                return obj
             else:
                 logger.warning(f"Object '{obj}' is not a subclass of 'PluginBase'")
 
-        return result
+        return None
