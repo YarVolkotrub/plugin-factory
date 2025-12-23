@@ -1,14 +1,13 @@
 from __future__ import annotations
-
 from functools import lru_cache
 from typing import Mapping, ClassVar
 import logging
 
-from src.domain.plugin_state import PluginState
-from src.domain.plugin import PluginBase
-from src.domain.plugin_info import PluginInfo
-from src.domain.plugin_action import PluginAction
-from src.domain.plugin_constants import PluginConstants
+from ..domain.plugin_state import PluginState
+from ..domain.plugin import PluginBase
+from ..domain.plugin_info import PluginInfo
+from ..domain.plugin_action import PluginAction
+from ..domain.plugin_constants import PluginConstants
 
 logger = logging.getLogger(__name__)
 

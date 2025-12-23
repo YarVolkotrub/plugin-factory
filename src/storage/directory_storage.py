@@ -2,8 +2,8 @@ from pathlib import Path
 from typing import Sequence
 import logging
 
-from src.interfaces.plugin_storage import PluginStorageBase
-from src.exceptions import PluginStorageError
+from ..interfaces.plugin_storage import PluginStorageBase
+from ..exceptions import PluginStorageError
 
 logger = logging.getLogger(__name__)
 

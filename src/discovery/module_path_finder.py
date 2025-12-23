@@ -2,7 +2,7 @@ from pathlib import Path
 from typing import Sequence
 import logging
 
-from src.interfaces.finder import PluginFinderBase
+from ..interfaces.finder import PluginFinderBase
 
 logger = logging.getLogger(__name__)
 

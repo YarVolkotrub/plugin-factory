@@ -2,8 +2,8 @@ from __future__ import annotations
 from typing import Final
 from types import MappingProxyType
 
-from src.domain.plugin_action import PluginAction
-from src.domain.plugin_state import PluginState
+from ..domain.plugin_action import PluginAction
+from ..domain.plugin_state import PluginState
 
 
 class PluginConstants:

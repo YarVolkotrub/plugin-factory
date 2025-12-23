@@ -1,8 +1,7 @@
 from __future__ import annotations
-
 from abc import ABC, abstractmethod
 
-from src.domain.plugin_info import PluginInfo
+from ..domain.plugin_info import PluginInfo
 
 
 class PluginBase(ABC):
