@@ -50,7 +50,7 @@ def main():
     manager.stop_all()
     manager.get_info()
     manager.start("Example0")
-
+    manager.start("Example0")
 
 if __name__ == "__main__":
     main()

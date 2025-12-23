@@ -1,23 +1,25 @@
 from __future__ import annotations
-from typing import Mapping
+
+from functools import lru_cache
+from typing import Mapping, ClassVar
 import logging
 
 from ..data.plugin_state import PluginState
 from ..interfaces.plugin import PluginBase
 from ..data.plugin_info import PluginInfo
 from ..data.plugin_action import PluginAction
+from ..data.plugin_constants import PluginConstants
 
 logger = logging.getLogger(__name__)
 
 
 class PluginManager:
-    _ALLOWED_TRANSITIONS: dict[PluginState, frozenset[PluginAction]] = {
-        PluginState.CREATED: frozenset([PluginAction.INIT]),
-        PluginState.INITIALIZED: frozenset([PluginAction.START]),
-        PluginState.STARTED: frozenset([PluginAction.STOP]),
-        PluginState.STOPPED: frozenset([PluginAction.INIT, PluginAction.START]),
-        PluginState.FAILED: frozenset(),
-    }
+    _ALLOWED_TRANSITIONS: ClassVar[
+        Mapping[
+            PluginState,
+            frozenset[PluginAction]
+        ]
+    ] = PluginConstants.ALLOWED_TRANSITIONS
 
     def __init__(self, plugins: Mapping[str, PluginBase]) -> None:
         if not plugins:
@@ -34,6 +36,10 @@ class PluginManager:
 
         logger.debug(f"init {__class__.__name__}")
 
+    @staticmethod
+    @lru_cache(maxsize=6)
+    def __get_allowed_actions(state: PluginState) -> frozenset[PluginAction]:
+        return PluginManager._ALLOWED_TRANSITIONS.get(state, frozenset())
 
     def init_all(self) -> None:
         logger.debug("init all called")
@@ -95,7 +101,10 @@ class PluginManager:
     ) -> None:
         logger.info(f"Plugin '{plugin_name}' - {action_name}")
 
-        self.__check_transition(plugin_name, action_name)
+        if self.__can_transition(plugin_name, action_name):
+            logger.error(f"Plugin '{plugin_name}' - {action_name} - failed")
+            return
+
         plugin = self.__get_plugin(plugin_name)
         method = getattr(plugin, action_name, None)
 
@@ -123,20 +132,11 @@ class PluginManager:
         except KeyError:
             raise KeyError(f"Plugin not found: {plugin_name}") from None
 
-    def __check_transition(
+    def __can_transition(
             self,
             plugin_name: str,
             action: str,
-    ) -> None:
-        state = self.__states[plugin_name]
+    ) -> bool:
+        current_state = self.__states[plugin_name]
 
-        allowed = self._ALLOWED_TRANSITIONS.get(state, set())
-
-        if action not in allowed:
-            raise InvalidPluginTransition(
-                f"Plugin '{plugin_name}': "
-                f"action '{action}' not allowed in state {state.name}"
-            )
-
-class InvalidPluginTransition(RuntimeError):
-    pass
+        return action not in self.__get_allowed_actions(current_state)

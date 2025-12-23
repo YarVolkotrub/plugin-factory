@@ -9,10 +9,14 @@ logger = logging.getLogger(__name__)
 
 class LocalPluginFinder(PluginFinderBase):
     def __init__(self, root_package: str = "plugins") -> None:
-        self._root_package = root_package
         logger.debug(f"init {__class__.__name__}")
 
+        self._root_package = root_package
+
     def get(self, files: Sequence[Path]) -> Sequence[str]:
+        if not files:
+            return []
+
         module_names: list[str] = []
 
         for file in files:
@@ -23,7 +27,7 @@ class LocalPluginFinder(PluginFinderBase):
                 idx = parts.index(self._root_package)
             except ValueError:
                 continue
-
+            
             import_path = ".".join(parts[idx:])
             module_names.append(import_path)
 
