@@ -2,7 +2,6 @@ from __future__ import annotations
 from importlib import import_module
 from types import ModuleType
 import logging
-from pathlib import Path
 
 from ..exceptions import PluginImportError
 

@@ -11,12 +11,12 @@ logger = logging.getLogger(__name__)
 
 
 class PluginManager:
-    ALLOWED_TRANSITIONS: dict[PluginState, set[str]] = {
-        PluginState.CREATED: {PluginAction.INIT},
-        PluginState.INITIALIZED: {PluginAction.START},
-        PluginState.STARTED: {PluginAction.STOP},
-        PluginState.STOPPED: {PluginAction.INIT, PluginAction.START},
-        PluginState.FAILED: set(),
+    _ALLOWED_TRANSITIONS: dict[PluginState, frozenset[PluginAction]] = {
+        PluginState.CREATED: frozenset([PluginAction.INIT]),
+        PluginState.INITIALIZED: frozenset([PluginAction.START]),
+        PluginState.STARTED: frozenset([PluginAction.STOP]),
+        PluginState.STOPPED: frozenset([PluginAction.INIT, PluginAction.START]),
+        PluginState.FAILED: frozenset(),
     }
 
     def __init__(self, plugins: Mapping[str, PluginBase]) -> None:
@@ -24,19 +24,21 @@ class PluginManager:
             raise ValueError("plugins mapping must not be empty")
 
         self.__plugins: Mapping[str, PluginBase] = plugins
-        self.__states: dict[str, PluginState] = {
-            name: PluginState.CREATED for name in plugins
-        }
-        self.__errors: dict[str, Exception | None] = {
-            name: None for name in plugins
-        }
+        self.__states: dict[str, PluginState] = {}
+        self.__errors: dict[str, Exception | None] = {}
+
+        self.__states = {name: PluginState.CREATED for name in plugins}
+        self.__errors = {name: None for name in plugins}
+
+        self.__plugin_names: tuple[str, ...] = tuple(self.__plugins.keys())
+
         logger.debug(f"init {__class__.__name__}")
 
 
     def init_all(self) -> None:
         logger.debug("init all called")
 
-        for plugin_name in self.__plugins.keys():
+        for plugin_name in self.__plugin_names:
             self.__execute(plugin_name, PluginAction.INIT, PluginState.INITIALIZED)
 
     def start(self, plugin_name: str) -> None:
@@ -52,13 +54,13 @@ class PluginManager:
     def start_all(self) ->  None:
         logger.debug("start all called")
 
-        for plugin_name in self.__plugins:
+        for plugin_name in self.__plugin_names:
             self.__execute(plugin_name, PluginAction.START, PluginState.STARTED)
 
     def stop_all(self) -> None:
         logger.debug("stop all called")
 
-        for plugin_name in self.__plugins:
+        for plugin_name in self.__plugin_names:
             self.__execute(plugin_name, PluginAction.STOP, PluginState.STOPPED)
 
     def get_info(self) -> dict[str, PluginInfo | None]:
@@ -128,7 +130,7 @@ class PluginManager:
     ) -> None:
         state = self.__states[plugin_name]
 
-        allowed = self.ALLOWED_TRANSITIONS.get(state, set())
+        allowed = self._ALLOWED_TRANSITIONS.get(state, set())
 
         if action not in allowed:
             raise InvalidPluginTransition(
