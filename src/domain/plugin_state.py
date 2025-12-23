@@ -7,3 +7,6 @@ class PluginState(Enum):
     STARTED = auto()
     STOPPED = auto()
     FAILED = auto()
+
+    def is_active(self, state):
+        ...

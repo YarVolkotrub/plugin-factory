@@ -35,41 +35,44 @@ class PluginStateManager:
 
         self.__plugin_names: tuple[str, ...] = tuple(self.__plugins.keys())
 
+        logger.debug("Initialized %s with %d plugins",
+                    self.__class__.__name__, len(plugins))
+
     @staticmethod
     @lru_cache(maxsize=6)
     def __get_allowed_actions(state: PluginState) -> frozenset[PluginAction]:
         return PluginStateManager._ALLOWED_TRANSITIONS.get(state, frozenset())
 
     def init_all_plugin(self) -> None:
-        logger.debug("init all called")
+        logger.debug("Initializing all plugins")
 
         for plugin_name in self.__plugin_names:
             self.__perform_transition(plugin_name, PluginAction.INIT, PluginState.INITIALIZED)
 
     def start_plugin(self, plugin_name: str) -> None:
-        logger.debug("start called")
+        logger.debug("Starting plugin: %s", plugin_name)
 
         self.__perform_transition(plugin_name, PluginAction.START, PluginState.STARTED)
 
     def stop_plugin(self, plugin_name: str) -> None:
-        logger.debug("stop called")
+        logger.debug("Stopping plugin: %s", plugin_name)
 
         self.__perform_transition(plugin_name, PluginAction.STOP, PluginState.STOPPED)
 
     def start_all_plugin(self) ->  None:
-        logger.debug("start all called")
+        logger.debug("Starting all plugins")
 
         for plugin_name in self.__plugin_names:
             self.__perform_transition(plugin_name, PluginAction.START, PluginState.STARTED)
 
     def stop_all_plugin(self) -> None:
-        logger.debug("stop all called")
+        logger.debug("Stopping all plugins")
 
         for plugin_name in self.__plugin_names:
             self.__perform_transition(plugin_name, PluginAction.STOP, PluginState.STOPPED)
 
     def get_plugin_info(self) -> dict[str, PluginInfo | None]:
-        logger.debug("get info called")
+        logger.debug("Getting plugin info")
 
         result: dict[str, PluginInfo | None] = {}
 
@@ -81,6 +84,8 @@ class PluginStateManager:
                     error=self.__errors[name],
                 )
             except Exception as exc:
+                logger.warning("Failed to get info for plugin '%s': %s", name,
+                               exc)
                 result[name] = PluginInfo(
                     name=name,
                     state=self.__states[name],
@@ -90,6 +95,7 @@ class PluginStateManager:
         return result
 
     def get_plugin_states(self) -> dict[str, PluginState]:
+        logger.debug("Getting plugin states")
         return dict(self.__states)
 
     def __perform_transition(
@@ -98,10 +104,12 @@ class PluginStateManager:
             action: str,
             target_state: PluginState,
     ) -> None:
-        logger.info(f"Plugin '{plugin_name}' - {action}")
+        logger.info("Transitioning plugin '%s': %s -> %s",
+                   plugin_name, action, target_state.value)
 
         if self.__is_transition_allowed(plugin_name, action):
-            logger.error(f"Plugin '{plugin_name}' - {action} - failed")
+            logger.error("Transition not allowed for plugin '%s': %s",
+                        plugin_name, action)
             return
 
         plugin = self.__get_plugin(plugin_name)
@@ -115,11 +123,13 @@ class PluginStateManager:
         try:
             getattr(plugin, action)()
             self.__states[plugin_name] = target_state
-            logger.debug(f"Plugin '{plugin_name}' - {action} - success")
+            logger.debug("Plugin '%s' transition successful: %s -> %s",
+                        plugin_name, action, target_state.value)
         except Exception as exc:
             self.__states[plugin_name] = PluginState.FAILED
             self.__errors[plugin_name] = exc
-            logger.debug(f"Plugin '{plugin_name}' - {action} - failed")
+            logger.error("Plugin '%s' transition failed: %s - %s",
+                        plugin_name, action, exc)
             raise
 
     def __get_plugin(self, plugin_name: str) -> PluginBase:
@@ -129,6 +139,7 @@ class PluginStateManager:
         try:
             return self.__plugins[plugin_name]
         except KeyError:
+            logger.error("Plugin not found: %s", plugin_name)
             raise KeyError(f"Plugin not found: {plugin_name}") from None
 
     def __is_transition_allowed(
@@ -137,5 +148,13 @@ class PluginStateManager:
             action: str,
     ) -> bool:
         current_state = self.__states[plugin_name]
+        allowed = action not in self.__get_allowed_actions(current_state)
 
-        return action not in self.__get_allowed_actions(current_state)
+        if allowed:
+            logger.debug("Transition allowed for '%s': %s (current state: %s)",
+                         plugin_name, action, current_state.value)
+        else:
+            logger.debug("Transition denied for '%s': %s (current state: %s)",
+                         plugin_name, action, current_state.value)
+
+        return allowed
