@@ -13,11 +13,6 @@ class PluginInfo:
     error: Optional[Exception] = field(default=None, compare=False, repr=False)
 
     @property
-    def is_active(self) -> bool:
-        """Check if plugin is active (cached property)."""
-        return PluginState.is_active(self.state)
-
-    @property
     def has_error(self) -> bool:
         """Check if plugin has error."""
         return self.error is not None

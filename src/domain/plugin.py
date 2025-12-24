@@ -9,16 +9,15 @@ class PluginBase(ABC):
     Base contract for all plugins.
     """
 
-    info: PluginInfo
+    @property
+    @abstractmethod
+    def info(self) -> PluginInfo: ...
 
     @abstractmethod
-    def init(self) -> None:
-        raise NotImplementedError
+    def init(self) -> None: ...
 
     @abstractmethod
-    def start(self) -> None:
-        raise NotImplementedError
+    def start(self) -> None: ...
 
     @abstractmethod
-    def stop(self) -> None:
-        raise NotImplementedError
+    def stop(self) -> None: ...

@@ -6,7 +6,6 @@ from pathlib import Path
 from types import ModuleType
 import logging
 
-
 from ..exceptions import PluginImportError
 
 logger = logging.getLogger(__name__)

@@ -1,6 +1,7 @@
 from __future__ import annotations
 from functools import lru_cache
-from typing import Mapping, ClassVar
+from typing import Mapping, ClassVar, Optional
+from types import MappingProxyType
 import logging
 
 from ..domain.plugin_state import PluginState
@@ -28,10 +29,11 @@ class PluginStateManager:
 
         self.__plugins: Mapping[str, PluginBase] = plugins
         self.__states: dict[str, PluginState] = {}
-        self.__errors: dict[str, Exception | None] = {}
+        self.__errors: dict[str, Optional[Exception] | None] = {}
 
-        self.__states = {name: PluginState.CREATED for name in plugins}
-        self.__errors = {name: None for name in plugins}
+        for name, plugin in plugins.items():
+            self.__states[name] = plugin.info.state
+            self.__errors[name] = plugin.info.error
 
         self.__plugin_names: tuple[str, ...] = tuple(self.__plugins.keys())
 
@@ -93,9 +95,9 @@ class PluginStateManager:
                 )
         return result
 
-    def get_plugin_states(self) -> dict[str, PluginState]:
+    def get_plugin_states(self) -> MappingProxyType[str, PluginState]:
         logger.debug("Getting plugin states")
-        return dict(self.__states)
+        return MappingProxyType(self.__states)
 
     def __perform_transition(
             self,
