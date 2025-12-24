@@ -116,4 +116,3 @@ cython_debug/
 .pypirc
 src/validation/plugin_contract_validate.py
 src/validation/plugin_contract_validator.py
-src/lifecycle

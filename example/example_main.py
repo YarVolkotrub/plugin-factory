@@ -11,7 +11,7 @@ from src import (
     DirectoryPluginStorage,
     StructuralPluginValidator,
     PluginClassScanner,
-    PluginModuleImporter,
+    ModuleImporter,
     PluginFactory
 )
 
@@ -33,7 +33,7 @@ def main():
     loader = PluginLoader(
         storage=storage,
         validator=validator,
-        importer=PluginModuleImporter(),
+        importer=ModuleImporter(),
         class_finder=PluginClassScanner(),
         factory=PluginFactory(),
     )

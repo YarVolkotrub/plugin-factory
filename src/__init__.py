@@ -36,6 +36,6 @@ __all__ = [
     # lifecycle
     "PluginClassScanner",
     "PluginFactory",
-    "PluginModuleImporter",
+    "ModuleImporter",
     "PluginLoader",
 ]
