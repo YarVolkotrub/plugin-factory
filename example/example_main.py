@@ -9,7 +9,6 @@ from src import (
     PluginStateManager,
     PluginLoader,
     DirectoryPluginStorage,
-    ModulePathFinder,
     StructuralPluginValidator,
     PluginClassScanner,
     PluginModuleImporter,
@@ -25,16 +24,14 @@ logging.basicConfig(
 def main():
     from pathlib import Path
 
-    plugin_dir = Path(__file__).parent / "plugins"
+    plugin_dir = Path(__file__).parent  /"plugins"
     pattern = "plugin*.py"
 
     storage = DirectoryPluginStorage(plugin_dir, pattern)
-    finder = ModulePathFinder()
     validator = StructuralPluginValidator()
 
     loader = PluginLoader(
         storage=storage,
-        finder=finder,
         validator=validator,
         importer=PluginModuleImporter(),
         class_finder=PluginClassScanner(),

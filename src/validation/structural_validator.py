@@ -12,7 +12,7 @@ class StructuralPluginValidator(PluginValidatorBase):
     """
     def is_valid(self, plugin: PluginBase, existing_plugins: dict[str, PluginBase]) -> bool:
         try:
-            name = plugin.name
+            name = plugin.info.name
         except AttributeError:
             logger.warning("Plugin missing 'name' attribute: %s", type(plugin).__name__)
             return False

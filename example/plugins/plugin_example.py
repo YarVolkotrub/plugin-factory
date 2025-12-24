@@ -6,15 +6,14 @@ class ExamplePlugin0(PluginBase):
     """Test plugin 0"""
 
     def __init__(self):
-        self.__name = "Example0"
+        self.__info: PluginInfo = PluginInfo(
+            name="Example0",  # Уникальное имя плагина
+            description="Example plugin for demonstration."
+        )
 
     @property
-    def name(self) -> str:
-        return self.__name
-
-    @property
-    def info(self) -> type[PluginInfo]:
-        return PluginInfo
+    def info(self) -> PluginInfo:
+        return self.__info
 
     def init(self) -> None:
         ...

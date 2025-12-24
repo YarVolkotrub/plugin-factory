@@ -91,7 +91,6 @@ class PluginStateManager:
                     state=self.__states[name],
                     error=exc,
                 )
-
         return result
 
     def get_plugin_states(self) -> dict[str, PluginState]:
