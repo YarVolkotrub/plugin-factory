@@ -1,0 +1,15 @@
+[project]
+name = "plugin-factory"
+version = "0.1.0"
+autor = "Yaroslav Volkotrub"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+disallow_untyped_defs = true

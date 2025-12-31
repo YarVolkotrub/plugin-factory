@@ -5,15 +5,26 @@ from pathlib import Path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
-from src import (
-    PluginStateManager,
-    PluginLoader,
-    DirectoryPluginStorage,
-    StructuralPluginValidator,
-    PluginClassScanner,
-    ModuleImporter,
-    PluginFactory
-)
+from plugin_factory import PluginLoader
+from plugin_factory import PluginFinder
+from plugin_factory import StructuralPluginValidator
+from plugin_factory import PluginClassScanner
+from plugin_factory import ModuleImporter
+from plugin_factory import FactoryPlugin
+from plugin_factory import PluginStateTransitions
+from plugin_factory import PluginStateManager
+
+
+# from plugin_factory import (
+#     PluginLoader,
+#     PluginFinder,
+#     StructuralPluginValidator,
+#     PluginClassScanner,
+#     ModuleImporter,
+#     FactoryPlugin,
+#     PluginStateTransitions,
+#     PluginStateManager,
+# )
 
 logging.basicConfig(
     level=logging.INFO,
@@ -22,24 +33,25 @@ logging.basicConfig(
 
 
 def main():
-    from pathlib import Path
-
     plugin_dir = Path(__file__).parent  /"plugins"
     pattern = "plugin*.py"
 
-    storage = DirectoryPluginStorage(plugin_dir, pattern)
+    finder = PluginFinder()
+    finder.find_in_directory(plugin_dir, pattern)
     validator = StructuralPluginValidator()
+    state_transitions = PluginStateTransitions()
+
 
     loader = PluginLoader(
-        storage=storage,
+        storage=finder,
         validator=validator,
         importer=ModuleImporter(),
         class_finder=PluginClassScanner(),
-        factory=PluginFactory(),
+        factory=FactoryPlugin(),
     )
     plugins = loader.load()
 
-    manager = PluginStateManager(plugins)
+    manager = PluginStateManager()
     manager.init_all_plugin()
     manager.get_plugin_info()
     manager.start_all_plugin()
@@ -48,6 +60,8 @@ def main():
     manager.get_plugin_info()
     manager.start_plugin("Example0")
     manager.start_plugin("Example0")
+    print(manager.get_plugin_states())
+    print(manager.get_plugin_info())
 
 if __name__ == "__main__":
     main()

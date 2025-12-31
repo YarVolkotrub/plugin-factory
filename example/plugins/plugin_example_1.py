@@ -1,5 +1,5 @@
-from src.domain.plugin import PluginBase
-from src.domain.plugin import PluginInfo
+from plugin_factory import PluginBase
+from plugin_factory import PluginInfo
 
 
 class ExamplePlugin1(PluginBase):
@@ -14,6 +14,10 @@ class ExamplePlugin1(PluginBase):
     @property
     def info(self) -> PluginInfo:
         return self.__info
+
+    @info.setter
+    def info(self, value: PluginInfo) -> None:
+        self.__info = value
 
     def init(self) -> None:
         ...

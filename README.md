@@ -15,13 +15,11 @@ Python 3.11+
 Без внешних зависимостей (на текущем этапе)
 
 ## Статус проекта
-***MVP → pre-production***, ниже описано текущая или ближайшая стадия разработки
+***MVP***, ниже описано текущая или ближайшая стадия разработки
 
 ⚠️example_main.py - временный файл, используется только для локального тестирования.
 
 ⚠️Каталог plugins/ содержит тестовые плагины, включая намеренно некорректные.
-
-⚠️plugin_manager.py - временное решение по управлению плагинами.
 
 ## Ключевые возможности
 
@@ -29,57 +27,75 @@ Python 3.11+
 - 📜 Строгий контракт плагина
 - 🔁 Управляемый lifecycle (state-machine)
 - 🧱 Явное разделение ответственности
-- 🧩 Готовность к DI, логированию и observability
-
-## Архитектурные принципы
-
-- Явные контракты вместо соглашений
-- Enum + dataclass вместо строк и dict
-- Lifecycle как state-machine
-- Минимум магии, максимум читаемости
 
 ## Контракт плагина
 
 Каждый плагин обязан реализовать методы:
 ```pycon
-def init(self) -> None: ...
-def start(self) -> None: ...
-def stop(self) -> None: ...
+    @property
+    @abstractmethod
+    def info(self) -> PluginInfo:
+        """Get info about the plugin."""
+
+    @info.setter
+    @abstractmethod
+    def info(self, value: PluginInfo) -> None:
+        """Set info about the plugin."""
+
+    @abstractmethod
+    def init(self) -> None:
+        """Initialize the plugin."""
+
+    @abstractmethod
+    def start(self) -> None:
+        """Start the plugin."""
+
+    @abstractmethod
+    def stop(self) -> None:
+        """Stop the plugin."""
 ```
 
 И содержать объект PluginInfo с полями:
 ```pycon
-PluginInfo(
-    name="example_plugin",
-    state=PluginState.CREATED,
-    description="Пример плагина",
-)
+class PluginInfo:
+    name: str
+    state: PluginState = field(default=PluginState.CREATED)
+    description: Optional[str] = field(default=None, compare=False)
+    error: Optional[Exception] = field(default=None, compare=False, repr=False)
 ```
 
 ## lifecycle (state-machine)
-Допустимые переходы
+Допустимые состояния и действия
 
-CREATED → init → INITIALIZED\
-INITIALIZED → start → RUNNING\
-RUNNING → stop → STOPPED\
-STOPPED → start → RUNNING\
-STOPPED → init → INITIALIZED
+    PluginState.CREATED - "Plugin created but not initialized",
+    PluginState.INITIALIZED - "Plugin initialized and ready to start",
+    PluginState.STARTED - "Plugin is running",
+    PluginState.STOPPED - "Plugin stopped",
+    PluginState.FAILED - "Plugin failed with error"
+
+    ACTION_DESCRIPTIONS:
+    PluginAction.INIT - "Initialize plugin",
+    PluginAction.START - "Start plugin execution",
+    PluginAction.STOP - "Stop plugin execution"
+    PluginAction.FAIL - "Plugin failed with error",
+    PluginAction.RESET - "Reset plugin state",
+    PluginAction.RESTART - "Restart plugin execution",
 
 
 ## Планы развития
 
 - Доработать lifecycle (state-machine)
 - Доработать валидацию
-- Расширить набор состояний
+- ???Расширить набор состояний???
 - Добавить централизованное логирование
 - Ввести иерархию ошибок
 - Переработать manager
 - Тесты
 - Docstring
 - Документация
-- Добавить загрузку/выгрузку плагинов на "горячую"
-- Добавить поддержка плагинов из формата json/yaml
-- Расширить источники загрузки плагинов
+- Расширить источники загрузки плагинов:
+  - Добавить загрузку/выгрузку плагинов на "горячую"
+  - Добавить поддержка плагинов из формата json/yaml
 - async плагины
 - callback плагины
 - CLI-инструменты
