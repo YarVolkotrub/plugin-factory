@@ -31,7 +31,7 @@ Python 3.11+
 ## Контракт плагина
 
 Каждый плагин обязан реализовать методы:
-```pycon
+```py
     @property
     @abstractmethod
     def info(self) -> PluginInfo:
@@ -56,7 +56,7 @@ Python 3.11+
 ```
 
 И содержать объект PluginInfo с полями:
-```pycon
+```py
 class PluginInfo:
     name: str
     state: PluginState = field(default=PluginState.CREATED)
