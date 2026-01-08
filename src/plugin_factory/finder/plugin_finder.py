@@ -5,8 +5,7 @@ import logging
 from pathlib import Path
 from typing import Sequence
 
-from .interface.storage_interface import StorageInterface
-
+from plugin_factory.finder.interface import StorageInterface
 from plugin_factory.exceptions.exceptions import PluginStorageError
 
 logger = logging.getLogger(__name__)

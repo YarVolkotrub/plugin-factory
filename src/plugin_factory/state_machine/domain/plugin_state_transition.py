@@ -3,10 +3,9 @@ from __future__ import annotations
 from typing import Final, Mapping, Dict
 from types import MappingProxyType
 
-from .plugin_action import PluginAction
-from .plugin_state import PluginState
-
-from plugin_factory.state_machine.interface.transitions_interface import TransitionInterface
+from plugin_factory.state_machine.domain import PluginAction
+from plugin_factory.state_machine.domain import PluginState
+from plugin_factory.state_machine.interface import TransitionInterface
 
 
 class PluginStateTransitions(TransitionInterface):

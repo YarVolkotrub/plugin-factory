@@ -7,13 +7,15 @@ from typing import Sequence, Type, TYPE_CHECKING
 from pathlib import Path
 
 if TYPE_CHECKING:
-    from .module_importer import ModuleImporter
-    from .plugin_class_scanner import PluginClassScanner
-    from .factory_plugin import FactoryPlugin
-    from plugin_factory.domain.plugin_base import PluginBase
-    from plugin_factory.validation.interface.validator import \
+    from plugin_factory.louder import (
+        ModuleImporter,
+        PluginClassScanner,
+        FactoryPlugin,
+    )
+    from plugin_factory.domain import PluginBase
+    from plugin_factory.validation.interface import \
         PluginValidatorInterface
-    from plugin_factory.finder.interface.storage_interface import \
+    from plugin_factory.finder.interface import \
         StorageInterface
 
 logger = logging.getLogger(__name__)
@@ -25,13 +27,13 @@ class PluginLoader:
         storage: StorageInterface,
         validator: PluginValidatorInterface,
         importer: ModuleImporter,
-        class_finder: PluginClassScanner,
+        class_scanner: PluginClassScanner,
         factory: FactoryPlugin,
     ) -> None:
         self._storage = storage
         self._validator = validator
         self._importer = importer
-        self._class_finder = class_finder
+        self._class_scanner = class_scanner
         self._factory = factory
         self._plugins: dict[str, PluginBase] = {}
 
@@ -41,7 +43,7 @@ class PluginLoader:
                     storage.__class__.__name__,
                     validator.__class__.__name__,
                     importer.__class__.__name__,
-                    class_finder.__class__.__name__,
+                    class_scanner.__class__.__name__,
                     factory.__class__.__name__)
 
     def load(self) -> MappingProxyType[str, PluginBase]:
@@ -56,13 +58,13 @@ class PluginLoader:
             if module is None:
                 continue
 
-            cls: Type[PluginBase] | None = self._class_finder.get(module)
+            cls: Type[PluginBase] | None = self._class_scanner.get_class(module)
 
             if cls is None:
                 logger.debug("No plugin class found in module: %s", plugin)
                 continue
 
-            plugin_instance = self._factory.create(cls)
+            plugin_instance = self._factory.get_instance(cls)
 
             if plugin_instance is None:
                 logger.warning("Failed to create instance for plugin: %s",

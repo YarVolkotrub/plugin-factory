@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Optional
 from dataclasses import dataclass, field, replace
 
-from plugin_factory.state_machine.domain.plugin_state import PluginState
+from plugin_factory.state_machine.domain import PluginState
 
 
 @dataclass(frozen=True, slots=True)

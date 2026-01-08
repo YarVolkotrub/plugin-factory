@@ -33,25 +33,27 @@ logging.basicConfig(
 
 
 def main():
-    plugin_dir = Path(__file__).parent  /"plugins"
+    plugin_dir = Path(__file__).parent / "plugins"
     pattern = "plugin*.py"
 
     finder = PluginFinder()
     finder.find_in_directory(plugin_dir, pattern)
-    validator = StructuralPluginValidator()
-    state_transitions = PluginStateTransitions()
 
+    validator = StructuralPluginValidator()
 
     loader = PluginLoader(
         storage=finder,
         validator=validator,
         importer=ModuleImporter(),
-        class_finder=PluginClassScanner(),
+        class_scanner=PluginClassScanner(),
         factory=FactoryPlugin(),
     )
     plugins = loader.load()
 
-    manager = PluginStateManager()
+    state_transitions = PluginStateTransitions()
+    manager = PluginStateManager(state_transitions)
+
+    manager.add_plugins(plugins)
     manager.init_all_plugin()
     manager.get_plugin_info()
     manager.start_all_plugin()

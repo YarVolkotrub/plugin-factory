@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from plugin_factory.validation.interface.validator import PluginValidatorInterface
 
 if TYPE_CHECKING:
-    from plugin_factory.domain.plugin_base import PluginBase
+    from plugin_factory import PluginBase
 
 logger = logging.getLogger(__name__)
 

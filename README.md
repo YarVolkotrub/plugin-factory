@@ -66,7 +66,7 @@ class PluginInfo:
 
 ## lifecycle (state-machine)
 Допустимые состояния и действия
-
+```py
     PluginState.CREATED - "Plugin created but not initialized",
     PluginState.INITIALIZED - "Plugin initialized and ready to start",
     PluginState.STARTED - "Plugin is running",
@@ -80,7 +80,7 @@ class PluginInfo:
     PluginAction.FAIL - "Plugin failed with error",
     PluginAction.RESET - "Reset plugin state",
     PluginAction.RESTART - "Restart plugin execution",
-
+```
 
 ## Планы развития
 

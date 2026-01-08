@@ -6,13 +6,13 @@ import logging
 from types import ModuleType
 from typing import Type
 
-from plugin_factory.domain.plugin_base import PluginBase
+from plugin_factory.domain import PluginBase
 
 logger = logging.getLogger(__name__)
 
 
 class PluginClassScanner:
-    def get(self, module: ModuleType) -> Type[PluginBase] | None:
+    def get_class(self, module: ModuleType) -> Type[PluginBase] | None:
         logger.debug("Scanning for plugin class in module: %s", module.__name__)
 
         for _, obj in inspect.getmembers(module, inspect.isclass):

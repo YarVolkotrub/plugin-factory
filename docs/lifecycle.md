@@ -1,4 +1,4 @@
-Описание (набросок):
+Описание (набросок самой идеи проекта):
 
 main - позволяет управлять finder, louder, state-machine
 
@@ -33,3 +33,17 @@ state-machine выполняет:
 - get all error - вывести все плагины с ошибкой
 - ???add plugin - добавить новый плагин
 - ???remove plugin - выгрузить плагин
+
+State плагинов:
+- CREATED - плагин создан но не инициализирован
+- INIT - плагин инициализирован и готов к старту
+- STARTED - плагин запущен
+- STOPPED - плагин остановлен
+- FAILED - плагин с ошибкой
+
+???Промежуточные State???: 
+помечать как transition (STATE_ONE - transition - STETE_TWO)
+- RELOAD - переход в состояние INIT
+- STARTUP - переход в состояние START
+- STOPPING - переход в состояние STOP
+
