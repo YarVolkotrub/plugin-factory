@@ -19,11 +19,11 @@ class ExamplePlugin2(PluginBase):
     def info(self, value: PluginInfo) -> None:
         self.__info = value
 
-    def init(self) -> None:
+    def initialize(self) -> None:
         ...
 
     def start(self) -> None:
         ...
 
-    def stop(self) -> None:
+    def shutdown(self) -> None:
         ...
