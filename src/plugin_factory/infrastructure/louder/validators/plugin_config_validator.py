@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import logging
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Dict
 
 from plugin_factory.contracts import PluginValidatorProtocol
 
@@ -19,7 +19,7 @@ class StructuralPluginValidator(PluginValidatorProtocol):
     def is_valid(
             self,
             plugin: PluginBase,
-            existing_plugins: dict[str, PluginBase]
+            existing_plugins: Dict[str, PluginBase]
     ) -> bool:
         try:
             name = plugin.info.name

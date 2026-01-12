@@ -4,8 +4,10 @@ from abc import abstractmethod
 from typing import Mapping, TYPE_CHECKING, Protocol
 
 if TYPE_CHECKING:
-    from plugin_factory.core import PluginState
-    from plugin_factory.core import PluginAction
+    from plugin_factory.core import (
+        PluginAction,
+        PluginState,
+    )
 
 
 class TransitionProtocol(Protocol):
@@ -13,4 +15,5 @@ class TransitionProtocol(Protocol):
     @abstractmethod
     def allowed_transitions(self)  -> Mapping[
         PluginState,
-        Mapping[PluginAction, PluginState]]: ...
+        Mapping[PluginAction, PluginState]
+    ]: ...

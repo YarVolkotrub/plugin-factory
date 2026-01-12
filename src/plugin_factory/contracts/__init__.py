@@ -1,6 +1,6 @@
 from plugin_factory.contracts.protocols.class_scanner_protocol import \
     ClassScannerProtocol
-from plugin_factory.contracts.protocols.finder_path import FinderPath
+from plugin_factory.contracts.protocols.finder_path import FinderPathProtocol
 from plugin_factory.contracts.protocols.importer_protocol import \
     ImporterProtocol
 from plugin_factory.contracts.protocols.instance_protocol import \
@@ -21,5 +21,5 @@ __all__ = [
     'InstanceProtocol',
     'ClassScannerProtocol',
     'ImporterProtocol',
-    'FinderPath',
+    'FinderPathProtocol',
 ]

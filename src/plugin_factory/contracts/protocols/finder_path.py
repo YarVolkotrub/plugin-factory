@@ -3,10 +3,10 @@ from pathlib import Path
 from typing import Protocol
 
 
-class FinderPath(Protocol):
+class FinderPathProtocol(Protocol):
     @abstractmethod
-    def find_in_directories(
+    def find_in_directory(
             self,
-            directories: list[Path],
+            plugin_dir: Path,
             pattern: str
     ) -> None: ...

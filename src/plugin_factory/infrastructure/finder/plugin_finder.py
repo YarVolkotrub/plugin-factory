@@ -2,18 +2,18 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Sequence
+from typing import Sequence, List
 
 from plugin_factory.contracts import StorageProtocol
-from plugin_factory.contracts import FinderPath
+from plugin_factory.contracts import FinderPathProtocol
 from plugin_factory.exceptions.exceptions import PluginStorageError
 
 logger = logging.getLogger(__name__)
 
 
-class PluginFinder(StorageProtocol, FinderPath):
+class PluginFinderProtocol(StorageProtocol, FinderPathProtocol):
     def __init__(self) -> None:
-        self.__plugins: list[Path] = []
+        self.__plugins: List[Path] = []
 
     @property
     def plugins(self) -> Sequence[Path]:
@@ -37,14 +37,14 @@ class PluginFinder(StorageProtocol, FinderPath):
             logger.error("Path is not a directory: '%s'", plugin_dir)
             raise PluginStorageError(error_msg)
 
-        files: list[Path] = list(plugin_dir.rglob(pattern))
+        files: List[Path] = list(plugin_dir.rglob(pattern))
         logger.info("Found %d plugin files in '%s'", len(files),
                     plugin_dir)
 
         for file in files:
             self.__add_file(file)
 
-    def find_in_directories(self, directories: list[Path], pattern: str):
+    def find_in_directories(self, directories: List[Path], pattern: str):
         for directory in directories:
             self.find_in_directory(directory, pattern)
 

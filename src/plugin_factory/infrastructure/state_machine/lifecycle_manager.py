@@ -1,17 +1,19 @@
 from __future__ import annotations
 
 import logging
-from typing import Mapping, TYPE_CHECKING
+from typing import Mapping, TYPE_CHECKING, Dict
 
 from plugin_factory.core.state_machine.plugin_action import PluginAction
+from plugin_factory.infrastructure.state_machine.lifecycle_transitions import \
+    LifecycleTransitions
 
 if TYPE_CHECKING:
-    from plugin_factory.core import PluginBase
-    from plugin_factory.core import PluginInfo
-    from plugin_factory.core import PluginState
+    from plugin_factory.core import (
+        PluginBase,
+        PluginInfo,
+        PluginState
+    )
     from plugin_factory.contracts import TransitionProtocol
-
-from plugin_factory.infrastructure.state_machine.lifecycle_transitions import LifecycleTransitions
 
 
 logger = logging.getLogger(__name__)
@@ -20,7 +22,7 @@ logger = logging.getLogger(__name__)
 class LifecycleManager:
     def __init__(self, allow_state: TransitionProtocol) -> None:
         self.__allow_state = allow_state
-        self.__plugins: dict[str, PluginBase] = {}
+        self.__plugins: Dict[str, PluginBase] = {}
 
         self.__state_transitions = LifecycleTransitions(self.__allow_state)
 

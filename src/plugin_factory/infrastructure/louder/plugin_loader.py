@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 from types import MappingProxyType, ModuleType
-from typing import Sequence, Type, TYPE_CHECKING
+from typing import Sequence, Type, TYPE_CHECKING, Dict
 
 from plugin_factory.contracts import PluginLoaderProtocol
 
@@ -34,7 +34,7 @@ class PluginLoader(PluginLoaderProtocol):
         self._importer = importer
         self._class_scanner = class_scanner
         self._factory = factory
-        self._plugins: dict[str, PluginBase] = {}
+        self._plugins: Dict[str, PluginBase] = {}
 
         logger.debug("Initialized %s", self.__class__.__name__)
 

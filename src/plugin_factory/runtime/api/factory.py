@@ -3,7 +3,8 @@ from types import MappingProxyType
 from typing import TYPE_CHECKING
 
 from plugin_factory.core.state_machine.transition import Transition
-from plugin_factory.infrastructure.finder.plugin_finder import PluginFinder
+from plugin_factory.infrastructure.finder.plugin_finder import \
+    PluginFinderProtocol
 from plugin_factory.infrastructure.louder.factories.factory_plugin import \
     FactoryPlugin
 from plugin_factory.infrastructure.louder.importers.module_importer import \
@@ -20,7 +21,7 @@ if TYPE_CHECKING:
     from plugin_factory.core.plugins.plugin_base import PluginBase
     from plugin_factory.contracts import (
         StorageProtocol,
-        FinderPath,
+        FinderPathProtocol,
         PluginLoaderProtocol,
         TransitionProtocol
     )
@@ -43,7 +44,7 @@ class Loader:
 
 class Finder:
     def __init__(self):
-        self._finder: FinderPath = PluginFinder()
+        self._finder: FinderPathProtocol = PluginFinderProtocol()
 
     @property
     def execute(self):

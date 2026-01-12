@@ -1,28 +1,24 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict
+from typing import TYPE_CHECKING
 
+from plugin_factory.core.state_machine.action_method_map import ActionMethodMap
 from plugin_factory.core.state_machine.plugin_action import PluginAction
 
 if TYPE_CHECKING:
     from plugin_factory.contracts import TransitionProtocol
-    from plugin_factory.core import PluginState
-    from plugin_factory.core import PluginBase
+    from plugin_factory.core import (
+        PluginState,
+        PluginBase,
+        PluginMethod,
+    )
 
 
 class LifecycleTransitions:
     def __init__(self, state_transitions: TransitionProtocol,
                  ):
         self.__allow_state_transitions = state_transitions.allowed_transitions
-
-        self.__ACTION_METHOD_MAP: Dict[PluginAction, str] = {
-            PluginAction.INIT: "initialize",
-            PluginAction.START: "start",
-            PluginAction.STOP: "shutdown",
-            PluginAction.FAIL: "fail",
-            PluginAction.RESET: "reset",
-            PluginAction.RESTART: "restart",
-        }
+        self.__method_map = ActionMethodMap
 
     def perform_transition(
             self,
@@ -60,14 +56,18 @@ class LifecycleTransitions:
             plugin: PluginBase,
             action: PluginAction
     ) -> None:
-        method = self.get_plugin_method(plugin, action)
+        method = self.__get_plugin_method(plugin, action)
 
         if method is None or not callable(method):
             return
 
         method()
 
-    def get_plugin_method(self, plugin: PluginBase, action: PluginAction):
+    def __get_plugin_method(
+            self,
+            plugin: PluginBase,
+            action: PluginAction
+    ) -> object | None:
         """Get method from plugin for specific action"""
-        method_name = self.__ACTION_METHOD_MAP[action]
+        method_name: PluginMethod = self.__method_map.get_method_name(action)
         return getattr(plugin, method_name, None)
