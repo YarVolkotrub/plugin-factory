@@ -28,6 +28,8 @@ if TYPE_CHECKING:
 
 
 # TODO: временное решение
+
+
 class Loader:
     def __init__(self, plugins: StorageProtocol):
         self._loader: PluginLoaderProtocol = PluginLoader(

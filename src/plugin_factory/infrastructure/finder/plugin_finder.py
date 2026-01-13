@@ -13,11 +13,11 @@ logger = logging.getLogger(__name__)
 
 class PluginFinderProtocol(StorageProtocol, FinderPathProtocol):
     def __init__(self) -> None:
-        self.__plugins: List[Path] = []
+        self._plugins: List[Path] = []
 
     @property
     def plugins(self) -> Sequence[Path]:
-        return self.__plugins
+        return self._plugins
 
     def find_in_directory(
             self,
@@ -27,42 +27,34 @@ class PluginFinderProtocol(StorageProtocol, FinderPathProtocol):
         logger.debug("Scanning for plugin files in '%s' with pattern '%s'",
                     plugin_dir, pattern)
 
-        if not plugin_dir.exists():
-            error_msg = f"Plugins directory does not exist: {plugin_dir}"
-            logger.error("Directory not found: '%s'", plugin_dir)
-            raise PluginStorageError(error_msg)
-
-        if not plugin_dir.is_dir():
-            error_msg = f"Plugin path is not a directory: {plugin_dir}"
-            logger.error("Path is not a directory: '%s'", plugin_dir)
-            raise PluginStorageError(error_msg)
+        self.__validate_directory(plugin_dir)
 
         files: List[Path] = list(plugin_dir.rglob(pattern))
         logger.info("Found %d plugin files in '%s'", len(files),
                     plugin_dir)
 
         for file in files:
-            self.__add_file(file)
+            if file.is_file():
+                self.__add_file(file)
 
     def find_in_directories(self, directories: List[Path], pattern: str):
         for directory in directories:
             self.find_in_directory(directory, pattern)
 
-    def find_from_json(self, json_file: Path):
-        ...
-
-    def find_from_xml(self, xml_file: Path):
-        ...
-
-    def find_from_yaml(self, yaml_file: Path):
-        ...
-
     def __add_file(self, file: Path) -> None:
-        if file in self.__plugins:
+        if file in self._plugins:
             logger.debug("Found plugin file: %s", file)
             return
-        self.__plugins.append(file)
+        self._plugins.append(file)
         logger.debug("Adding plugin file: '%s'", file)
 
+    def __validate_directory(self, directory: Path) -> None:
+        if not directory.exists():
+            error_msg = f"Plugins directory does not exist: {directory}"
+            logger.error("Directory not found: '%s'", directory)
+            raise PluginStorageError(error_msg)
 
-
+        if not directory.is_dir():
+            error_msg = f"Plugin path is not a directory: {directory}"
+            logger.error("Path is not a directory: '%s'", directory)
+            raise PluginStorageError(error_msg)

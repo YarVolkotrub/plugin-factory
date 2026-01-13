@@ -18,7 +18,7 @@ class LifecycleTransitions:
     def __init__(self, state_transitions: TransitionProtocol,
                  ):
         self.__allow_state_transitions = state_transitions.allowed_transitions
-        self.__method_map = ActionMethodMap
+        self.__method_map = ActionMethodMap()
 
     def perform_transition(
             self,
@@ -40,7 +40,7 @@ class LifecycleTransitions:
             action: PluginAction
     ) -> PluginState | None:
         if not self.__is_action_allowed(current_state, action):
-            return
+            return None
         return self.__allow_state_transitions[current_state][action]
 
     def __is_action_allowed(

@@ -21,22 +21,22 @@ logger = logging.getLogger(__name__)
 # TODO больше методов взаимодействия
 class LifecycleManager:
     def __init__(self, allow_state: TransitionProtocol) -> None:
-        self.__allow_state = allow_state
-        self.__plugins: Dict[str, PluginBase] = {}
+        self._allow_state = allow_state
+        self._plugins: Dict[str, PluginBase] = {}
 
-        self.__state_transitions = LifecycleTransitions(self.__allow_state)
+        self._state_transitions = LifecycleTransitions(self._allow_state)
 
 # region method info plugin
     def get_plugin_info(self) -> Mapping[str, PluginInfo]:
         logger.debug("Getting plugin info")
         return {name: plugin.info
-                for name, plugin in self.__plugins.items()}
+                for name, plugin in self._plugins.items()}
 
 
     def get_plugin_states(self) -> Mapping[str, PluginState]:
         logger.debug("Getting plugin states")
         return {name: plugin.info.state
-                for name, plugin in self.__plugins.items()}
+                for name, plugin in self._plugins.items()}
 # endregion
 
 # region method add plugin
@@ -53,7 +53,7 @@ class LifecycleManager:
                 )
                 return
 
-        self.__plugins.update(plugins)
+        self._plugins.update(plugins)
 
     def add_plugin_force(self, plugins: Mapping[str, PluginBase]) -> None:
         logger.debug("Adding plugins (skip duplicate): %s", plugins)
@@ -65,13 +65,13 @@ class LifecycleManager:
             else:
                 new_plugins[name] = plugin
 
-        self.__plugins.update(new_plugins)
+        self._plugins.update(new_plugins)
 # endregion
 
 # region method for all plugin
     def init_all_plugin(self) -> None:
         logger.debug("Initializing all plugins")
-        for plugin in self.__plugins.values():
+        for plugin in self._plugins.values():
             try:
                 self.__change_state(PluginAction.INIT, plugin)
             except ValueError:
@@ -84,7 +84,7 @@ class LifecycleManager:
 
     def start_all_plugin(self) ->  None:
         logger.debug("Starting all plugins")
-        for plugin in self.__plugins.values():
+        for plugin in self._plugins.values():
             try:
                 self.__change_state(PluginAction.START, plugin)
             except ValueError:
@@ -97,7 +97,7 @@ class LifecycleManager:
 
     def stop_all_plugin(self) -> None:
         logger.debug("Stopping all plugins")
-        for plugin in self.__plugins.values():
+        for plugin in self._plugins.values():
             try:
                 self.__change_state(PluginAction.STOP, plugin)
             except ValueError:
@@ -122,14 +122,14 @@ class LifecycleManager:
 # endregion
 
     def __get_plugin(self, plugin_name) -> PluginBase:
-        return self.__plugins.get(plugin_name)
+        return self._plugins.get(plugin_name)
 
     def __is_plugin_exist(self, plugin_name: str) -> bool:
         logger.debug("Checking if plugin exist: %s", plugin_name)
-        return plugin_name in self.__plugins
+        return plugin_name in self._plugins
 
     def __change_state(self, action: PluginAction, plugin: PluginBase) -> None:
         if not self.__is_plugin_exist(plugin.info.name):
             return
 
-        self.__state_transitions.perform_transition(plugin, action)
+        self._state_transitions.perform_transition(plugin, action)

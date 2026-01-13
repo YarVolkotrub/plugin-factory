@@ -12,10 +12,6 @@ logger = logging.getLogger(__name__)
 
 
 class StructuralPluginValidator(PluginValidatorProtocol):
-    """
-    This validator checks structural plugin contract only.
-    It does not validate lifecycle order or runtime state.
-    """
     def is_valid(
             self,
             plugin: PluginBase,
