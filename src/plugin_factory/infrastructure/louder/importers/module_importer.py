@@ -2,26 +2,22 @@ from __future__ import annotations
 
 import logging
 import sys
-from importlib import util, machinery
+from importlib import util
 from pathlib import Path
 from types import ModuleType
 
 from plugin_factory.contracts import ImporterProtocol
-from plugin_factory.exceptions.exceptions import PluginImportError
+from plugin_factory.exceptions.exceptions import PluginImportError, \
+    PluginStorageError
 
 logger = logging.getLogger(__name__)
 
 
 class ModuleImporter(ImporterProtocol):
     def import_module(self, plugin: Path) -> ModuleType | None:
-        logger.debug("Importing plugin module: %s", plugin)
         try:
             plugin_name: str = self.__generate_module_name(plugin)
             module = self.__import_module_from_file(plugin, plugin_name)
-            logger.info(
-                "Successfully imported plugin module: %s",
-                plugin
-            )
 
             return module
         except Exception as exc:
@@ -39,21 +35,33 @@ class ModuleImporter(ImporterProtocol):
             plugin: Path,
             module_name: str
     )-> ModuleType:
-        spec = util.spec_from_file_location(module_name, plugin)
+        try:
+            spec = util.spec_from_file_location(module_name, plugin)
+        except (ImportError, FileNotFoundError) as exc:
+            raise PluginStorageError(
+                "Failed to create import spec for '%s'", plugin
+            ) from exc
 
-        if spec is None:
-            raise PluginImportError(f"Could not load spec for module: {plugin}")
+        if spec is None or spec.loader is None:
+            raise PluginStorageError(
+                f"Invalid import spec for plugin file: '%s'", plugin)
 
-        if not isinstance(spec.loader, machinery.SourceFileLoader):
-            raise PluginImportError(f"Unsupported loader type for: {plugin}")
+        try:
+            module: ModuleType = util.module_from_spec(spec)
+            plugin: str = str(plugin)
+            sys.modules[plugin] = module
+            spec.loader.exec_module(module)
+            module.__file__  = plugin
+            module.__name__ = module_name
 
-        module: ModuleType = util.module_from_spec(spec)
-        sys.modules[str(plugin)] = module
-        spec.loader.exec_module(module)
-        module.__file__ = str(plugin)
-        module.__name__ = module_name
-
-        return module
+            return module
+        except (SyntaxError,
+                ImportError,
+                FileNotFoundError,
+                AttributeError) as exc:
+            raise PluginImportError(
+                "Failed to import plugin module: '%s'", plugin
+            ) from exc
 
     def __generate_module_name(self, plugin: Path) -> str:
         return f"plugin_factory{hash(plugin)}"

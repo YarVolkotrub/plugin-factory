@@ -1,7 +1,8 @@
 from dataclasses import dataclass
 from typing import Dict, ClassVar
-from plugin_factory.core.state_machine.plugin_action import PluginAction
+
 from plugin_factory.core.plugins.plugin_method import PluginMethod
+from plugin_factory.core.state_machine.plugin_action import PluginAction
 
 
 @dataclass(frozen=True, slots=True)

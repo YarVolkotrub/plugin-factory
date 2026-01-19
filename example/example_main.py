@@ -5,7 +5,7 @@ from pathlib import Path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
-from plugin_factory import Loader, Finder, Lifecycle
+from plugin_factory import Loader, Finder, Lifecycle, FinderStorage
 
 
 logging.basicConfig(
@@ -17,11 +17,12 @@ logging.basicConfig(
 def main():
     plugin_dir = Path(__file__).parent / "plugins"
     pattern = "plugin*.py"
+    p = FinderStorage(pattern, plugin_dir)
+    finder_manager = Finder()
+    finder = finder_manager.execute
+    finder.find_in_directory(p)
 
-    finder = Finder()
-    finder.find_plugins(plugin_dir, pattern)
-
-    loader = Loader(finder.execute)
+    loader = Loader(finder)
     plugins = loader.plugins
 
     lifecycle_manager = Lifecycle()
@@ -38,6 +39,7 @@ def main():
     manager.start_plugin("Example0")
     print(manager.get_plugin_states())
     print(manager.get_plugin_info())
+    print(manager.get_plugin_error())
 
 if __name__ == "__main__":
     main()

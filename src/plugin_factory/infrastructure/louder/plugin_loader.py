@@ -6,6 +6,8 @@ from types import MappingProxyType, ModuleType
 from typing import Sequence, Type, TYPE_CHECKING, Dict
 
 from plugin_factory.contracts import PluginLoaderProtocol
+from plugin_factory.infrastructure.louder.result.creator_collection_plugin import \
+    CreatorCollectionPlugin
 
 if TYPE_CHECKING:
     from plugin_factory.core import PluginBase
@@ -35,16 +37,17 @@ class PluginLoader(PluginLoaderProtocol):
         self._class_scanner = class_scanner
         self._factory = factory
         self._plugins: Dict[str, PluginBase] = {}
+        self._collection = CreatorCollectionPlugin()
+
 
         logger.debug("Initialized %s", self.__class__.__name__)
 
     def load(self) -> MappingProxyType[str, PluginBase]:
-        logger.info("Starting plugin loading process")
-
         plugins: Sequence[Path] = self._storage.plugins
-        logger.debug("Found %d file(s) to scan", len(plugins))
+        logger.info("Found %d file(s) to scan", len(plugins))
 
         for plugin in plugins:
+            logger.debug("Importing plugin module: %s", plugin)
             module: ModuleType | None = self._importer.import_module(plugin)
 
             if module is None:
@@ -54,7 +57,6 @@ class PluginLoader(PluginLoaderProtocol):
 
             if cls is None:
                 continue
-
             plugin_instance: PluginBase = self._factory.get_instance(cls)
 
             if plugin_instance is None:
@@ -63,9 +65,11 @@ class PluginLoader(PluginLoaderProtocol):
             if not self._validator.is_valid(plugin_instance, self._plugins):
                 # TODO: unload instance
                 continue
+            self._collection.add_plugin(plugin_instance)
 
             self._plugins[plugin_instance.info.name] = plugin_instance
 
         logger.info("Plugin loading completed, total %d",
                     len(self._plugins))
+        pp = self._collection.plugins
         return MappingProxyType(self._plugins)

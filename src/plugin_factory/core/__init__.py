@@ -1,5 +1,7 @@
+from plugin_factory.core.finder.finder_storage import FinderStorage
 from plugin_factory.core.plugins.plugin_base import PluginBase
 from plugin_factory.core.plugins.plugin_info import PluginInfo
+from plugin_factory.core.plugins.plugin_instance import PluginInstance
 from plugin_factory.core.plugins.plugin_method import PluginMethod
 from plugin_factory.core.state_machine.action_method_map import ActionMethodMap
 from plugin_factory.core.state_machine.plugin_action import PluginAction
@@ -14,4 +16,6 @@ __all__ = [
     'Transition',
     'PluginMethod',
     'ActionMethodMap',
+    'FinderStorage',
+    'PluginInstance',
 ]

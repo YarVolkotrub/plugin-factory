@@ -4,6 +4,7 @@ import logging
 from typing import Mapping, TYPE_CHECKING, Dict
 
 from plugin_factory.core.state_machine.plugin_action import PluginAction
+from plugin_factory.exceptions import PluginStateError
 from plugin_factory.infrastructure.state_machine.lifecycle_transitions import \
     LifecycleTransitions
 
@@ -26,7 +27,7 @@ class LifecycleManager:
 
         self._state_transitions = LifecycleTransitions(self._allow_state)
 
-# region method info plugin
+# region Plugin Information Methods
     def get_plugin_info(self) -> Mapping[str, PluginInfo]:
         logger.debug("Getting plugin info")
         return {name: plugin.info
@@ -36,6 +37,10 @@ class LifecycleManager:
     def get_plugin_states(self) -> Mapping[str, PluginState]:
         logger.debug("Getting plugin states")
         return {name: plugin.info.state
+                for name, plugin in self._plugins.items()}
+
+    def get_plugin_error(self):
+        return {name: plugin.info.has_error
                 for name, plugin in self._plugins.items()}
 # endregion
 
@@ -112,7 +117,11 @@ class LifecycleManager:
 # region method for solo plugin
     def start_plugin(self, plugin_name: str) -> None:
         logger.debug("Starting plugin: %s", plugin_name)
+
         plugin = self.__get_plugin(plugin_name)
+        if not plugin:
+            raise PluginStateError("Failed to start plugin: %s", plugin_name)
+
         self.__change_state(PluginAction.START, plugin)
 
     def stop_plugin(self, plugin_name: str) -> None:
@@ -121,7 +130,10 @@ class LifecycleManager:
         self.__change_state(PluginAction.STOP, plugin)
 # endregion
 
-    def __get_plugin(self, plugin_name) -> PluginBase:
+    def __get_plugin(self, plugin_name) -> PluginBase | None:
+        if not plugin_name or not isinstance(plugin_name, str):
+            logger.error("Invalid plugin name: %s", plugin_name)
+            return None
         return self._plugins.get(plugin_name)
 
     def __is_plugin_exist(self, plugin_name: str) -> bool:
@@ -129,7 +141,4 @@ class LifecycleManager:
         return plugin_name in self._plugins
 
     def __change_state(self, action: PluginAction, plugin: PluginBase) -> None:
-        if not self.__is_plugin_exist(plugin.info.name):
-            return
-
         self._state_transitions.perform_transition(plugin, action)

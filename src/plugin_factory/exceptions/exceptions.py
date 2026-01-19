@@ -16,3 +16,7 @@ class PluginValidationError(PluginError):
 
 class PluginInstantiationError(PluginError):
     pass
+
+
+class PluginStateError(PluginError):
+    pass

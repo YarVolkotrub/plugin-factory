@@ -1,4 +1,4 @@
-from plugin_factory.infrastructure.finder.plugin_finder import PluginFinderProtocol
+from plugin_factory.infrastructure.finder.plugin_finder import PluginFinder
 from plugin_factory.infrastructure.louder.factories.factory_plugin import \
     FactoryPlugin
 from plugin_factory.infrastructure.louder.importers.module_importer import \
@@ -14,7 +14,7 @@ from plugin_factory.infrastructure.state_machine.lifecycle_transitions import \
     LifecycleTransitions
 
 __all__ = [
-    'PluginFinderProtocol',
+    'PluginFinder',
     'LifecycleManager',
     'LifecycleTransitions',
     'PluginLoader',

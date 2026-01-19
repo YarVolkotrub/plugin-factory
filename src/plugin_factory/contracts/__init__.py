@@ -1,16 +1,16 @@
-from plugin_factory.contracts.protocols.class_scanner_protocol import \
+from plugin_factory.contracts.infrastructure.class_scanner_protocol import \
     ClassScannerProtocol
-from plugin_factory.contracts.protocols.finder_path import FinderPathProtocol
-from plugin_factory.contracts.protocols.importer_protocol import \
+from plugin_factory.contracts.infrastructure.finder_manager_protocol import FinderManagerProtocol
+from plugin_factory.contracts.infrastructure.importer_protocol import \
     ImporterProtocol
-from plugin_factory.contracts.protocols.instance_protocol import \
+from plugin_factory.contracts.infrastructure.instance_protocol import \
     InstanceProtocol
-from plugin_factory.contracts.protocols.plugin_louder_protocol import \
+from plugin_factory.contracts.infrastructure.plugin_louder_protocol import \
     PluginLoaderProtocol
-from plugin_factory.contracts.protocols.plugin_validator_protocol import \
+from plugin_factory.contracts.infrastructure.plugin_validator_protocol import \
     PluginValidatorProtocol
-from plugin_factory.contracts.protocols.storage_protocol import StorageProtocol
-from plugin_factory.contracts.protocols.transitions_protocol import \
+from plugin_factory.contracts.infrastructure.storage_protocol import StorageProtocol
+from plugin_factory.contracts.infrastructure.transitions_protocol import \
     TransitionProtocol
 
 __all__ = [
@@ -21,5 +21,5 @@ __all__ = [
     'InstanceProtocol',
     'ClassScannerProtocol',
     'ImporterProtocol',
-    'FinderPathProtocol',
+    'FinderManagerProtocol',
 ]

@@ -68,6 +68,6 @@ class LifecycleTransitions:
             plugin: PluginBase,
             action: PluginAction
     ) -> object | None:
-        """Get method from plugin for specific action"""
         method_name: PluginMethod = self.__method_map.get_method_name(action)
+
         return getattr(plugin, method_name, None)

@@ -14,20 +14,16 @@ logger = logging.getLogger(__name__)
 
 class FactoryPlugin(InstanceProtocol):
     def get_instance(self, plugin_class: Type[PluginBase]) -> PluginBase:
-        logger.debug(
-            "Instantiating plugin: %s",
-            plugin_class.__name__
-        )
         try:
-            logger.info(
-                "Successfully instantiated plugin: %s",
-                plugin_class.__name__
-            )
-
             return plugin_class()
+        except TypeError as exc:
+            raise PluginInstantiationError(
+                "Failed to instantiate plugin '%s': %s"
+                "invalid constructor signature",
+                plugin_class.__name__, exc
+            ) from exc
         except Exception as exc:
-            logger.error(
+            raise PluginInstantiationError(
                 "Failed to instantiate plugin '%s': %s",
                 plugin_class.__name__, exc
-            )
-            raise PluginInstantiationError(plugin_class.__name__) from exc
+            ) from exc
