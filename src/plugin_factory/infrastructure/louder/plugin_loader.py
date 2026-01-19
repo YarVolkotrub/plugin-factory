@@ -71,5 +71,5 @@ class PluginLoader(PluginLoaderProtocol):
 
         logger.info("Plugin loading completed, total %d",
                     len(self._plugins))
-        pp = self._collection.plugins
+
         return MappingProxyType(self._plugins)

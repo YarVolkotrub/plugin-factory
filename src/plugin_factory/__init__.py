@@ -1,12 +1,11 @@
 
 from plugin_factory.core import PluginInfo, PluginBase, FinderStorage
-from plugin_factory.runtime.api.factory import Loader, Finder, Lifecycle
+from plugin_factory.runtime.api.manager_plugin_factory import Lifecycle, PluginManager
 
 __all__ = [
     # api
-    "Loader",
-    "Finder",
     "Lifecycle",
+    "PluginManager",
 
     # core
     "PluginBase",
