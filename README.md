@@ -94,7 +94,7 @@ docs/lifecycle.md - поака не готово
 docs/examples.md - поака не готово
 ```
 
-## Планы развития
+## Планы развития TODO
 Основное:
 - Доработать lifecycle (state-machine)
 - Доработать контракты
