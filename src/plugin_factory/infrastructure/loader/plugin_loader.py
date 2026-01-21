@@ -6,7 +6,7 @@ from types import MappingProxyType, ModuleType
 from typing import Sequence, Type, TYPE_CHECKING, Dict
 
 from plugin_factory.contracts import PluginLoaderProtocol
-from plugin_factory.infrastructure.louder.result.creator_collection_plugin import \
+from plugin_factory.infrastructure.loader.result.creator_collection_plugin import \
     CreatorCollectionPlugin
 
 if TYPE_CHECKING:

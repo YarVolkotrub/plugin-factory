@@ -1,8 +1,11 @@
-from typing import Tuple, List
+from __future__ import annotations
 
-from plugin_factory.core.plugins.plugin_base import PluginBase
-from plugin_factory.core.plugins.plugin_instance import PluginInstance
+from typing import Tuple, List, TYPE_CHECKING
 
+from plugin_factory.core import PluginInstance
+
+if TYPE_CHECKING:
+    from plugin_factory.core import PluginBase
 
 class CreatorCollectionPlugin:
     def __init__(self):

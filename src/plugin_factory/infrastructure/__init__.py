@@ -1,12 +1,12 @@
 from plugin_factory.infrastructure.finder.plugin_finder import PluginFinder
-from plugin_factory.infrastructure.louder.factories.factory_plugin import \
+from plugin_factory.infrastructure.loader.factories.factory_plugin import \
     FactoryPlugin
-from plugin_factory.infrastructure.louder.importers.module_importer import \
+from plugin_factory.infrastructure.loader.importers.module_importer import \
     ModuleImporter
-from plugin_factory.infrastructure.louder.plugin_loader import PluginLoader
-from plugin_factory.infrastructure.louder.scanners.plugin_class_scanner import \
+from plugin_factory.infrastructure.loader.plugin_loader import PluginLoader
+from plugin_factory.infrastructure.loader.scanners.plugin_class_scanner import \
     PluginClassScanner
-from plugin_factory.infrastructure.louder.validators.plugin_config_validator import \
+from plugin_factory.infrastructure.loader.validators.plugin_config_validator import \
     StructuralPluginValidator
 from plugin_factory.infrastructure.state_machine.lifecycle_manager import \
     LifecycleManager

@@ -27,7 +27,7 @@ Python 3.11+
 
 ⚠️В api, Lifecycle и PluginManager разделены (временно)
 
-⚠️Не приступал к отдельным тесам
+⚠️Не приступал к отдельным тестам
 
 ⚠️CreatorCollectionPlugin - класс для PluginLoader на подумать (пока не несет смысла)
 

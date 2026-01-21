@@ -7,8 +7,7 @@ from pathlib import Path
 from types import ModuleType
 
 from plugin_factory.contracts import ImporterProtocol
-from plugin_factory.exceptions.exceptions import PluginImportError, \
-    PluginStorageError
+from plugin_factory.exceptions import PluginImportError, PluginStorageError
 
 logger = logging.getLogger(__name__)
 

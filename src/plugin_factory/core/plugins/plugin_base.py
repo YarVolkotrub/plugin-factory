@@ -4,11 +4,8 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from plugin_factory.core import (
-        PluginInfo,
-        PluginState,
-    )
-    from plugin_factory.exceptions.exceptions import PluginError
+    from plugin_factory.core import PluginInfo, PluginState
+    from plugin_factory.exceptions import PluginError
 
 
 class PluginBase(ABC):

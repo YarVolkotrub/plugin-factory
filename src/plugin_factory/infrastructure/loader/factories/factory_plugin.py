@@ -4,7 +4,7 @@ import logging
 from typing import Type, TYPE_CHECKING
 
 from plugin_factory.contracts import InstanceProtocol
-from plugin_factory.exceptions.exceptions import PluginInstantiationError
+from plugin_factory.exceptions import PluginInstantiationError
 
 if TYPE_CHECKING:
     from plugin_factory.core import PluginBase

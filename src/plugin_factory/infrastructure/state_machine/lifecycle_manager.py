@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from typing import Mapping, TYPE_CHECKING, Dict
 
-from plugin_factory.core.state_machine.plugin_action import PluginAction
+from plugin_factory.core import PluginAction
 from plugin_factory.exceptions import PluginStateError
 from plugin_factory.infrastructure.state_machine.lifecycle_transitions import \
     LifecycleTransitions

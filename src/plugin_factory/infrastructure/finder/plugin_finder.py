@@ -4,10 +4,9 @@ import logging
 from pathlib import Path
 from typing import Sequence, List
 
-from plugin_factory.contracts import FinderManagerProtocol
-from plugin_factory.contracts import StorageProtocol
-from plugin_factory.core.finder.finder_storage import FinderStorage
-from plugin_factory.exceptions.exceptions import PluginStorageError
+from plugin_factory.contracts import FinderManagerProtocol, StorageProtocol
+from plugin_factory.core import FinderStorage
+from plugin_factory.exceptions import PluginStorageError
 
 logger = logging.getLogger(__name__)
 

@@ -2,8 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from plugin_factory.core.state_machine.action_method_map import ActionMethodMap
-from plugin_factory.core.state_machine.plugin_action import PluginAction
+from plugin_factory.core import ActionMethodMap, PluginAction
 
 if TYPE_CHECKING:
     from plugin_factory.contracts import TransitionProtocol

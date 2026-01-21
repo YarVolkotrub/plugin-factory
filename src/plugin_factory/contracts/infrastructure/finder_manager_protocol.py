@@ -2,7 +2,7 @@ from abc import abstractmethod
 from typing import Protocol, TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from plugin_factory.core.finder.finder_storage import FinderStorage
+    from plugin_factory.core import FinderStorage
 
 
 class FinderManagerProtocol(Protocol):

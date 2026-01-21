@@ -4,10 +4,7 @@ from abc import abstractmethod
 from typing import Mapping, TYPE_CHECKING, Protocol
 
 if TYPE_CHECKING:
-    from plugin_factory.core import (
-        PluginAction,
-        PluginState,
-    )
+    from plugin_factory.core import PluginAction, PluginState
 
 
 class TransitionProtocol(Protocol):
