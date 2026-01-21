@@ -20,5 +20,6 @@
 - CLI-инструменты
 
 мусорные файлы/классы: PluginRegistry, PluginInstance
+
 класс loader формирует словарь загруженных плагинов для LifecycleManager
-подумать над оберткой (временно PluginRegistry) или над dataclass PluginInstance
+подумать над оберткой (временно PluginRegistry) или над dataclass PluginInstance на замену текущему словарю
