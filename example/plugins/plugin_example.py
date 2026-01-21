@@ -27,3 +27,9 @@ class ExamplePlugin0(PluginBase):
 
     def shutdown(self) -> None:
         ...
+
+    def restart(self):
+        ...
+
+    def reset(self):
+        ...

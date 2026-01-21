@@ -6,8 +6,6 @@ from types import MappingProxyType, ModuleType
 from typing import Sequence, Type, TYPE_CHECKING, Dict
 
 from plugin_factory.contracts import PluginLoaderProtocol
-from plugin_factory.infrastructure.loader.result.creator_collection_plugin import \
-    CreatorCollectionPlugin
 
 if TYPE_CHECKING:
     from plugin_factory.core import PluginBase
@@ -37,8 +35,6 @@ class PluginLoader(PluginLoaderProtocol):
         self._class_scanner = class_scanner
         self._factory = factory
         self._plugins: Dict[str, PluginBase] = {}
-        self._collection = CreatorCollectionPlugin()
-
 
         logger.debug("Initialized %s", self.__class__.__name__)
 
@@ -65,7 +61,6 @@ class PluginLoader(PluginLoaderProtocol):
             if not self._validator.is_valid(plugin_instance, self._plugins):
                 # TODO: unload instance
                 continue
-            self._collection.add_plugin(plugin_instance)
 
             self._plugins[plugin_instance.info.name] = plugin_instance
 

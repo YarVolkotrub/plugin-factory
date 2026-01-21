@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
-
+import logging
 from plugin_factory.core import ActionMethodMap, PluginAction
+from plugin_factory.exceptions import PluginStateError
 
 if TYPE_CHECKING:
     from plugin_factory.contracts import TransitionProtocol
@@ -12,6 +13,7 @@ if TYPE_CHECKING:
         PluginMethod,
     )
 
+logger = logging.getLogger(__name__)
 
 class LifecycleTransitions:
     def __init__(self, state_transitions: TransitionProtocol,
@@ -28,6 +30,9 @@ class LifecycleTransitions:
         next_state = self.__get_next_state(current_state, action)
 
         if next_state not in self.__allow_state_transitions:
+            logger.warning(
+                "Failed to perform transition for plugin %s action %s to state %s",
+                plugin.info.name, action.name, current_state.name)
             return
 
         self.__execute_plugin_action(plugin, action)

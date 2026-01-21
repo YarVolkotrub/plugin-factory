@@ -5,5 +5,5 @@ from plugin_factory.core.plugins.plugin_base import PluginBase
 
 @dataclass
 class PluginInstance:
-    identification: str
+    identifier: str
     instance: PluginBase

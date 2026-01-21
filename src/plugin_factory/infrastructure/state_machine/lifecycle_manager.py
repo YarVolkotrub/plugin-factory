@@ -115,19 +115,42 @@ class LifecycleManager:
 # endregion
 
 # region method for solo plugin
+    def initialize_plugin(self, plugin_name: str) -> None:
+        logger.debug("Initializing plugin: %s", plugin_name)
+        plugin = self.__get_plugin(plugin_name)
+        if not plugin:
+            raise PluginStateError("Failed to inviting plugin: %s", plugin_name)
+        self.__change_state(PluginAction.INIT, plugin)
+
     def start_plugin(self, plugin_name: str) -> None:
         logger.debug("Starting plugin: %s", plugin_name)
-
         plugin = self.__get_plugin(plugin_name)
         if not plugin:
             raise PluginStateError("Failed to start plugin: %s", plugin_name)
-
         self.__change_state(PluginAction.START, plugin)
 
     def stop_plugin(self, plugin_name: str) -> None:
         logger.debug("Stopping plugin: %s", plugin_name)
         plugin = self.__get_plugin(plugin_name)
+        if not plugin:
+            raise PluginStateError("Failed to start plugin: %s", plugin_name)
         self.__change_state(PluginAction.STOP, plugin)
+
+    def restart_plugin(self, plugin_name: str) -> None:
+        logger.debug("Restarting plugin: %s", plugin_name)
+        plugin = self.__get_plugin(plugin_name)
+        if not plugin:
+            raise PluginStateError("Failed to restart plugin: %s", plugin_name)
+        self.__change_state(PluginAction.RESTART, plugin)
+
+    def reset_plugin(self, plugin_name: str) -> None:
+        logger.debug("Resetting plugin: %s", plugin_name)
+        plugin = self.__get_plugin(plugin_name)
+        if not plugin:
+            raise PluginStateError("Failed to reset plugin: %s", plugin_name)
+        self.__change_state(PluginAction.RESET, plugin)
+
+
 # endregion
 
     def __get_plugin(self, plugin_name) -> PluginBase | None:

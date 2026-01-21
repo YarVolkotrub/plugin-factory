@@ -35,6 +35,14 @@ class PluginBase(ABC):
     def shutdown(self) -> None:
         """Stop the plugin."""
 
+    @abstractmethod
+    def reset(self) -> None:
+        """Reset the plugin."""
+
+    @abstractmethod
+    def restart(self) -> None:
+        """Restart the plugin."""
+
     def set_state(self, new_state: PluginState) -> None:
         """Set the state of the plugin."""
         self.info = self.info.switch_state(new_state)
