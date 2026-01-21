@@ -60,13 +60,8 @@ plugin-factory/
 ## Контракт плагина, жизненный цикл и основные требования к реализации и изменению
 
 Подробное описаны см. в:
-
-```
-docs/plugin_system_architecture.md
-```
+[docs/plugin_system_architecture.md](https://github.com/YarVolkotrub/plugin-factory/blob/main/docs/plugin_system_architecture.md)
 
 ## Планы развития TODO и долги
-см. в 
-```
-docs/TODO.md
-```
+см. в:
+[docs/TODO.md](https://github.com/YarVolkotrub/plugin-factory/blob/main/docs/TODO.md)
