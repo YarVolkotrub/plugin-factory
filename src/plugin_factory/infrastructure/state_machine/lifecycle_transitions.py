@@ -83,8 +83,3 @@ class LifecycleTransitions:
         method_name: PluginMethod = ACTION_METHOD_MAP[action]
 
         return getattr(plugin, method_name, None)
-
-    def __fail_plugin(self, plugin: PluginBase, exc: Exception) -> None:
-        new_info = plugin.info.set_error(exc)
-        new_info = new_info.switch_state(FSMState.FAILED)
-        plugin._apply_info(new_info)

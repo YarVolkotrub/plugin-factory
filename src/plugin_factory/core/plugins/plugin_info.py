@@ -22,6 +22,12 @@ class PluginInfo:
         if not self.name:
             raise ConfigurationError("Plugin name is empty")
 
+        if self.state is FSMState.FAILED and self.error is None:
+            raise RuntimeError("FAILED state requires error")
+
+        if self.state is not FSMState.FAILED and self.error is not None:
+            raise RuntimeError("error allowed only in FAILED state")
+
     @property
     def has_error(self) -> bool:
         """Check if plugin has error."""

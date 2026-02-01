@@ -26,25 +26,27 @@ FSM_TRANSITIONS: Final[
             MappingProxyType[
                 FSMState,
                 Dict[FSMAction, FSMState]]
-        ] = (MappingProxyType({
-            FSMState.CREATED: {
-                FSMAction.INIT: FSMState.INITIALIZED,
-                FSMAction.FAIL: FSMState.FAILED,
-            },
-            FSMState.INITIALIZED: {
-                FSMAction.START: FSMState.STARTED,
-                FSMAction.FAIL: FSMState.FAILED,
-            },
-            FSMState.STARTED: {
-                FSMAction.STOP: FSMState.STOPPED,
-                FSMAction.FAIL: FSMState.FAILED,
-            },
-            FSMState.STOPPED: {
-                FSMAction.INIT: FSMState.INITIALIZED,
-                FSMAction.START: FSMState.STARTED,
-                FSMAction.FAIL: FSMState.FAILED,
-            },
-            FSMState.FAILED: {
-                FSMAction.INIT: FSMState.CREATED,
-            },
-        }))
+        ] = (MappingProxyType(
+    {
+        FSMState.CREATED: {
+            FSMAction.INIT: FSMState.INITIALIZED,
+            FSMAction.FAIL: FSMState.FAILED,
+        },
+        FSMState.INITIALIZED: {
+            FSMAction.START: FSMState.STARTED,
+            FSMAction.FAIL: FSMState.FAILED,
+        },
+        FSMState.STARTED: {
+            FSMAction.STOP: FSMState.STOPPED,
+            FSMAction.FAIL: FSMState.FAILED,
+        },
+        FSMState.STOPPED: {
+            FSMAction.INIT: FSMState.INITIALIZED,
+            FSMAction.START: FSMState.STARTED,
+            FSMAction.FAIL: FSMState.FAILED,
+        },
+        FSMState.FAILED: {
+            FSMAction.INIT: FSMState.CREATED,
+        },
+    }
+))

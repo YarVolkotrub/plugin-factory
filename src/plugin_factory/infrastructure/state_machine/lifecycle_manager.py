@@ -33,7 +33,6 @@ class LifecycleManager:
         return {name: plugin.info
                 for name, plugin in self._plugins.items()}
 
-
     def get_plugin_states(self) -> Mapping[str, FSMState]:
         logger.debug("Getting plugin states")
         return {name: plugin.info.state

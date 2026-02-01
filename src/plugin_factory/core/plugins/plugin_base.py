@@ -10,6 +10,8 @@ if TYPE_CHECKING:
 class PluginBase(ABC):
     """
     Base contract for all plugins.
+    Plugin must not manage lifecycle or state.
+    Any exception raised will be handled by the framework.
     """
     NAME: str
     DESCRIPTION: str | None = None
