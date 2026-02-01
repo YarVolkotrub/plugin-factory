@@ -16,12 +16,6 @@ logger = logging.getLogger(__name__)
 class FactoryPlugin(InstanceProtocol):
     def get_instance(self, plugin_class: Type[PluginBase]) -> PluginBase:
         try:
-            if not hasattr(plugin_class, "NAME"):
-                raise PluginInstantiationError("Plugin must define NAME")
-
-            if not hasattr(plugin_class, "DESCRIPTION"):
-                raise PluginInstantiationError("Plugin must define DESCRIPTION")
-
             info = PluginInfo(
                 name=plugin_class.NAME,
                 description=plugin_class.DESCRIPTION,

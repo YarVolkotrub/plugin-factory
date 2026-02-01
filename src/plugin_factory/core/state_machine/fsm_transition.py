@@ -1,33 +1,28 @@
 from __future__ import annotations
 
 from types import MappingProxyType
-from typing import Final, Mapping, Dict
+from typing import Final, Dict
 
-from plugin_factory.contracts import TransitionProtocol
 from plugin_factory.core import FSMAction
 from plugin_factory.core import FSMState
 
+"""Enum defining transitions between states.
 
-class FSMTransition(TransitionProtocol):
-    """Enum defining transitions between states.
+STATE_DESCRIPTIONS:
+    FSMState.CREATED - "Plugin created but not initialized",
+    FSMState.INITIALIZED - "Plugin initialized and ready to start",
+    FSMState.STARTED - "Plugin is running",
+    FSMState.STOPPED - "Plugin stopped",
+    FSMState.FAILED - "Plugin failed with error"
 
-    STATE_DESCRIPTIONS:
-        FSMState.CREATED - "Plugin created but not initialized",
-        FSMState.INITIALIZED - "Plugin initialized and ready to start",
-        FSMState.STARTED - "Plugin is running",
-        FSMState.STOPPED - "Plugin stopped",
-        FSMState.FAILED - "Plugin failed with error"
+ACTION_DESCRIPTIONS:
+    FSMAction.INIT - "Initialize plugin",
+    FSMAction.START - "Start plugin execution",
+    FSMAction.STOP - "Stop plugin execution"
+    FSMAction.FAIL - "Plugin failed with error",
+"""
 
-        ACTION_DESCRIPTIONS:
-        FSMAction.INIT - "Initialize plugin",
-        FSMAction.START - "Start plugin execution",
-        FSMAction.STOP - "Stop plugin execution"
-        FSMAction.FAIL - "Plugin failed with error",
-    """
-
-
-    def __init__(self):
-        self.__allowed_transitions: Final[
+FSM_TRANSITIONS: Final[
             MappingProxyType[
                 FSMState,
                 Dict[FSMAction, FSMState]]
@@ -53,10 +48,3 @@ class FSMTransition(TransitionProtocol):
                 FSMAction.INIT: FSMState.CREATED,
             },
         }))
-
-    @property
-    def allowed_transitions(self) -> Mapping[
-        FSMState,
-        Mapping[FSMAction, FSMState]
-    ]:
-        return self.__allowed_transitions

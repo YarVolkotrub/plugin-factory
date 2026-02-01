@@ -24,3 +24,7 @@ class PluginStateError(PluginError):
 
 class InvalidTransitionError(PluginError):
     pass
+
+
+class ConfigurationError(PluginError):
+    pass

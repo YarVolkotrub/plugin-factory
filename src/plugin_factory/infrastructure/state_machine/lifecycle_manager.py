@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+from types import MappingProxyType
 from typing import Mapping, TYPE_CHECKING, Dict
 
 from plugin_factory.core import FSMAction
@@ -14,18 +15,17 @@ if TYPE_CHECKING:
         PluginInfo,
         FSMState
     )
-    from plugin_factory.contracts import TransitionProtocol
 
 
 logger = logging.getLogger(__name__)
 
 # TODO больше методов взаимодействия
 class LifecycleManager:
-    def __init__(self, allow_state: TransitionProtocol) -> None:
-        self._allow_state = allow_state
+    def __init__(self, allow_state: MappingProxyType[
+        FSMState,Dict[FSMAction, FSMState]
+    ]) -> None:
         self._plugins: Dict[str, PluginBase] = {}
-
-        self._state_transitions = LifecycleTransitions(self._allow_state)
+        self._state_transitions = LifecycleTransitions(allow_state)
 
 # region Plugin Information Methods
     def get_plugin_info(self) -> Mapping[str, PluginInfo]:

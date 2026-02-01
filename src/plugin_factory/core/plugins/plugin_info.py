@@ -4,6 +4,7 @@ from dataclasses import dataclass, field, replace
 from typing import Optional
 
 from plugin_factory.core.state_machine.fsm_state import FSMState
+from plugin_factory.exceptions import ConfigurationError
 
 
 @dataclass(frozen=True, slots=True)
@@ -17,6 +18,10 @@ class PluginInfo:
     description: Optional[str] = field(default=None, compare=False)
     error: Optional[BaseException] = field(default=None, compare=False, repr=False)
 
+    def __post_init__(self):
+        if not self.name:
+            raise ConfigurationError("Plugin name is empty")
+
     @property
     def has_error(self) -> bool:
         """Check if plugin has error."""
@@ -26,6 +31,7 @@ class PluginInfo:
         """Switch the state of the plugin."""
         if new_state is FSMState.FAILED:
             raise ValueError("Use fail()")
+
         return replace(self, state=new_state)
 
     def fail(self, exc: BaseException) -> PluginInfo:

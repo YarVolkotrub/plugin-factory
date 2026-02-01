@@ -10,12 +10,10 @@ from plugin_factory.contracts.infrastructure.plugin_louder_protocol import \
 from plugin_factory.contracts.infrastructure.plugin_validator_protocol import \
     PluginValidatorProtocol
 from plugin_factory.contracts.infrastructure.storage_protocol import StorageProtocol
-from plugin_factory.contracts.infrastructure.transitions_protocol import \
-    TransitionProtocol
+
 
 __all__ = [
     'StorageProtocol',
-    'TransitionProtocol',
     'PluginValidatorProtocol',
     'PluginLoaderProtocol',
     'InstanceProtocol',

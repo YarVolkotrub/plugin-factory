@@ -1,12 +1,14 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
 import logging
-from plugin_factory.core import ActionMethodMap, FSMAction, FSMState
+from types import MappingProxyType
+from typing import TYPE_CHECKING, Dict
+
+from plugin_factory.core import get_method_name
 
 if TYPE_CHECKING:
-    from plugin_factory.contracts import TransitionProtocol
     from plugin_factory.core import (
+        FSMAction,
         FSMState,
         PluginBase,
         PluginMethod,
@@ -15,10 +17,10 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 class LifecycleTransitions:
-    def __init__(self, state_transitions: TransitionProtocol,
-                 ):
-        self.__allow_state_transitions = state_transitions.allowed_transitions
-        self.__method_map = ActionMethodMap()
+    def __init__(self, state_transitions: MappingProxyType[
+        FSMState,Dict[FSMAction, FSMState]
+    ]):
+        self.__allow_state_transitions = state_transitions
 
     def perform_transition(
             self,
@@ -77,7 +79,7 @@ class LifecycleTransitions:
             plugin: PluginBase,
             action: FSMAction
     ) -> object | None:
-        method_name: PluginMethod = self.__method_map.get_method_name(action)
+        method_name: PluginMethod = get_method_name(action)
 
         return getattr(plugin, method_name, None)
 
