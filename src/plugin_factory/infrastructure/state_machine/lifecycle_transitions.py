@@ -4,7 +4,7 @@ import logging
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Dict
 
-from plugin_factory.core import get_method_name
+from plugin_factory.core import ACTION_METHOD_MAP
 
 if TYPE_CHECKING:
     from plugin_factory.core import (
@@ -15,6 +15,7 @@ if TYPE_CHECKING:
     )
 
 logger = logging.getLogger(__name__)
+
 
 class LifecycleTransitions:
     def __init__(self, state_transitions: MappingProxyType[
@@ -79,7 +80,7 @@ class LifecycleTransitions:
             plugin: PluginBase,
             action: FSMAction
     ) -> object | None:
-        method_name: PluginMethod = get_method_name(action)
+        method_name: PluginMethod = ACTION_METHOD_MAP[action]
 
         return getattr(plugin, method_name, None)
 

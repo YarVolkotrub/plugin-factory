@@ -14,6 +14,20 @@ class PluginBase(ABC):
     NAME: str
     DESCRIPTION: str | None = None
 
+    def __init__(self, info: PluginInfo):
+        self._info = info
+
+    @property
+    def info(self) -> PluginInfo:
+        """Return frozen-dataclass the plugin info."""
+        return self._info
+
+    @final
+    def _apply_info(self, info: PluginInfo) -> None:
+        """The internal method for applying the plugin information
+        is called only during the creation of the plugin instance"""
+        self._info = info
+
     @abstractmethod
     def initialize(self) -> None:
         """Initialize the plugin."""
@@ -25,14 +39,3 @@ class PluginBase(ABC):
     @abstractmethod
     def shutdown(self) -> None:
         """Stop the plugin."""
-
-    def __init__(self, info: PluginInfo):
-        self._info = info
-
-    @property
-    def info(self) -> PluginInfo:
-        return self._info
-
-    @final
-    def _apply_info(self, info: PluginInfo) -> None:
-        self._info = info
