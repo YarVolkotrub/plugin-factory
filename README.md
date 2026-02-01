@@ -8,6 +8,8 @@
 - предсказуемый жизненный цикл (state machine);
 - удобный runtime API и CLI;
 
+Основной подход реализация системы плагинов - использование чистого python без зависимостей от сторонних библиотек.
+
 ## Требования
 
 Python 3.11+
@@ -46,10 +48,10 @@ plugin-factory/
 ├── src/
 │   └── plugin_factory/
 │       ├── contracts/          # Контракты и интерфейсы
-│       ├── core/               # Базовая логика фабрики
+│       ├── core/               # Базовая логика
 │       ├── infrastructure/     # State machine и инфраструктура
 │       ├── logger/             # Единый логгер
-│       └── runtime/            # Runtime API и CLI
+│       └── runtime/            # Runtime API
 ├── tests/                      # Тесты
 ├── pyproject.toml              # Конфигурация проекта
 └── README.md
