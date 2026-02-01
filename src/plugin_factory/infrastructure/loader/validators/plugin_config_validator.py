@@ -21,14 +21,14 @@ class StructuralPluginValidator(PluginValidatorProtocol):
             name = plugin.info.name
         except AttributeError:
             logger.warning(
-                "Plugin missing 'name' attribute: %s",
+                "Plugin missing 'name' attribute: '%s'",
                 type(plugin).__name__
             )
             return False
 
         if not isinstance(name, str):
             logger.warning(
-                "Plugin name must be string, got %s: %s",
+                "Plugin name must be string, got '%s': '%s'",
                 type(name).__name__, repr(name)
             )
             return False

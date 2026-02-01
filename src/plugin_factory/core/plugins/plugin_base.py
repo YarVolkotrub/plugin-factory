@@ -1,27 +1,18 @@
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, final
 
 if TYPE_CHECKING:
-    from plugin_factory.core import PluginInfo, PluginState
-    from plugin_factory.exceptions import PluginError
+    from plugin_factory.core import PluginInfo
 
 
 class PluginBase(ABC):
     """
     Base contract for all plugins.
     """
-
-    @property
-    @abstractmethod
-    def info(self) -> PluginInfo:
-        """Get info about the plugin."""
-
-    @info.setter
-    @abstractmethod
-    def info(self, value: PluginInfo) -> None:
-        """Set info about the plugin."""
+    NAME: str
+    DESCRIPTION: str | None = None
 
     @abstractmethod
     def initialize(self) -> None:
@@ -35,18 +26,13 @@ class PluginBase(ABC):
     def shutdown(self) -> None:
         """Stop the plugin."""
 
-    @abstractmethod
-    def reset(self) -> None:
-        """Reset the plugin."""
+    def __init__(self, info: PluginInfo):
+        self._info = info
 
-    @abstractmethod
-    def restart(self) -> None:
-        """Restart the plugin."""
+    @property
+    def info(self) -> PluginInfo:
+        return self._info
 
-    def set_state(self, new_state: PluginState) -> None:
-        """Set the state of the plugin."""
-        self.info = self.info.switch_state(new_state)
-
-    def set_error(self, new_error: PluginError) -> None:
-        """Set the error of the plugin."""
-        self.info = self.info.set_error(new_error)
+    @final
+    def _apply_info(self, info: PluginInfo) -> None:
+        self._info = info

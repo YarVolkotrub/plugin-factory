@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 from typing import Mapping, TYPE_CHECKING, Dict
 
-from plugin_factory.core import PluginAction
+from plugin_factory.core import FSMAction
 from plugin_factory.exceptions import PluginStateError
 from plugin_factory.infrastructure.state_machine.lifecycle_transitions import \
     LifecycleTransitions
@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from plugin_factory.core import (
         PluginBase,
         PluginInfo,
-        PluginState
+        FSMState
     )
     from plugin_factory.contracts import TransitionProtocol
 
@@ -34,7 +34,7 @@ class LifecycleManager:
                 for name, plugin in self._plugins.items()}
 
 
-    def get_plugin_states(self) -> Mapping[str, PluginState]:
+    def get_plugin_states(self) -> Mapping[str, FSMState]:
         logger.debug("Getting plugin states")
         return {name: plugin.info.state
                 for name, plugin in self._plugins.items()}
@@ -78,7 +78,7 @@ class LifecycleManager:
         logger.debug("Initializing all plugins")
         for plugin in self._plugins.values():
             try:
-                self.__change_state(PluginAction.INIT, plugin)
+                self.__change_state(FSMAction.INIT, plugin)
             except ValueError:
                 ...
             except Exception as exc:
@@ -91,7 +91,7 @@ class LifecycleManager:
         logger.debug("Starting all plugins")
         for plugin in self._plugins.values():
             try:
-                self.__change_state(PluginAction.START, plugin)
+                self.__change_state(FSMAction.START, plugin)
             except ValueError:
                 ...
             except Exception as exc:
@@ -104,7 +104,7 @@ class LifecycleManager:
         logger.debug("Stopping all plugins")
         for plugin in self._plugins.values():
             try:
-                self.__change_state(PluginAction.STOP, plugin)
+                self.__change_state(FSMAction.STOP, plugin)
             except ValueError:
                 ...
             except Exception as exc:
@@ -116,39 +116,28 @@ class LifecycleManager:
 
 # region method for solo plugin
     def initialize_plugin(self, plugin_name: str) -> None:
-        logger.debug("Initializing plugin: %s", plugin_name)
+        logger.debug("Initializing plugin: '%s'", plugin_name)
         plugin = self.__get_plugin(plugin_name)
         if not plugin:
-            raise PluginStateError("Failed to inviting plugin: %s", plugin_name)
-        self.__change_state(PluginAction.INIT, plugin)
+            raise PluginStateError("Failed to inviting plugin: '%s'",
+                                   plugin_name)
+        self.__change_state(FSMAction.INIT, plugin)
 
     def start_plugin(self, plugin_name: str) -> None:
         logger.debug("Starting plugin: %s", plugin_name)
         plugin = self.__get_plugin(plugin_name)
         if not plugin:
-            raise PluginStateError("Failed to start plugin: %s", plugin_name)
-        self.__change_state(PluginAction.START, plugin)
+            raise PluginStateError("Failed to start plugin: '%s'",
+                                   plugin_name)
+        self.__change_state(FSMAction.START, plugin)
 
     def stop_plugin(self, plugin_name: str) -> None:
         logger.debug("Stopping plugin: %s", plugin_name)
         plugin = self.__get_plugin(plugin_name)
         if not plugin:
-            raise PluginStateError("Failed to start plugin: %s", plugin_name)
-        self.__change_state(PluginAction.STOP, plugin)
-
-    def restart_plugin(self, plugin_name: str) -> None:
-        logger.debug("Restarting plugin: %s", plugin_name)
-        plugin = self.__get_plugin(plugin_name)
-        if not plugin:
-            raise PluginStateError("Failed to restart plugin: %s", plugin_name)
-        self.__change_state(PluginAction.RESTART, plugin)
-
-    def reset_plugin(self, plugin_name: str) -> None:
-        logger.debug("Resetting plugin: %s", plugin_name)
-        plugin = self.__get_plugin(plugin_name)
-        if not plugin:
-            raise PluginStateError("Failed to reset plugin: %s", plugin_name)
-        self.__change_state(PluginAction.RESET, plugin)
+            raise PluginStateError("Failed to start plugin: '%s'",
+                                   plugin_name)
+        self.__change_state(FSMAction.STOP, plugin)
 
 
 # endregion
@@ -163,5 +152,5 @@ class LifecycleManager:
         logger.debug("Checking if plugin exist: %s", plugin_name)
         return plugin_name in self._plugins
 
-    def __change_state(self, action: PluginAction, plugin: PluginBase) -> None:
+    def __change_state(self, action: FSMAction, plugin: PluginBase) -> None:
         self._state_transitions.perform_transition(plugin, action)

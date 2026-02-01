@@ -5,7 +5,7 @@ from pathlib import Path
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Dict, Sequence, Optional
 
-from plugin_factory.core import FinderStorage, Transition
+from plugin_factory.core import FinderStorage, FSMTransition
 from plugin_factory.infrastructure import (
     FactoryPlugin,
     ModuleImporter,
@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 
 class Lifecycle:
     def __init__(self):
-        self._state_transitions: TransitionProtocol = Transition()
+        self._state_transitions: TransitionProtocol = FSMTransition()
         self._lifecycle: LifecycleManager = LifecycleManager(self._state_transitions)
 
     @property

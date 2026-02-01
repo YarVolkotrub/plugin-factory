@@ -3,26 +3,31 @@ from __future__ import annotations
 from dataclasses import dataclass, field, replace
 from typing import Optional
 
-from plugin_factory.core.state_machine.plugin_state import PluginState
+from plugin_factory.core.state_machine.fsm_state import FSMState
 
 
 @dataclass(frozen=True, slots=True)
 class PluginInfo:
-    """Basic information about plugin."""
+    """Basic information about plugin.
+    PluginInfo is created only during plugin instantiation
+    and must not be created manually elsewhere.
+    """
     name: str
-    state: PluginState = field(default=PluginState.CREATED)
+    state: FSMState = field(default=FSMState.CREATED)
     description: Optional[str] = field(default=None, compare=False)
-    error: Optional[Exception] = field(default=None, compare=False, repr=False)
+    error: Optional[BaseException] = field(default=None, compare=False, repr=False)
 
     @property
     def has_error(self) -> bool:
         """Check if plugin has error."""
-        return self.error is not None
+        return self.error is not None or self.state is FSMState.FAILED
 
-    def switch_state(self, state: PluginState):
+    def switch_state(self, new_state: FSMState):
         """Switch the state of the plugin."""
-        return replace(self, state=state)
+        if new_state is FSMState.FAILED:
+            raise ValueError("Use fail()")
+        return replace(self, state=new_state)
 
-    def set_error(self, error: Exception):
+    def fail(self, exc: BaseException) -> PluginInfo:
         """Set the error of the plugin."""
-        return replace(self, error=error)
+        return replace(self, state=FSMState.FAILED, error=exc)

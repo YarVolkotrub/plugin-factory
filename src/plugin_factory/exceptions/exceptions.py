@@ -20,3 +20,7 @@ class PluginInstantiationError(PluginError):
 
 class PluginStateError(PluginError):
     pass
+
+
+class InvalidTransitionError(PluginError):
+    pass

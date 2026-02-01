@@ -30,7 +30,7 @@ class PluginClassScanner(ClassScannerProtocol):
                     obj.__name__
                 )
         logger.warning(
-            "No plugin class found in module: %s",
+            "No plugin class found in module: '%s'",
             module.__name__
         )
         return None

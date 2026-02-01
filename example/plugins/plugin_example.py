@@ -1,29 +1,17 @@
 from plugin_factory import PluginBase
-from plugin_factory import PluginInfo
 
 
 class ExamplePlugin0(PluginBase):
     """Test plugin 0"""
-
-    def __init__(self):
-        self.__info: PluginInfo = PluginInfo(
-            name="Example0",  # Уникальное имя плагина
-            description="Example plugin for demonstration."
-        )
-
-    @property
-    def info(self) -> PluginInfo:
-        return self.__info
-
-    @info.setter
-    def info(self, value: PluginInfo) -> None:
-        self.__info = value
+    NAME = "Example0"
+    DESCRIPTION = "Test plugin 0"
 
     def initialize(self) -> None:
         ...
 
     def start(self) -> None:
-        ...
+        if 1/0:
+            raise RuntimeError("Connection failed")
 
     def shutdown(self) -> None:
         ...

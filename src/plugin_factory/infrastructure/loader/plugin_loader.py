@@ -43,7 +43,7 @@ class PluginLoader(PluginLoaderProtocol):
         logger.info("Found %d file(s) to scan", len(plugins))
 
         for plugin in plugins:
-            logger.debug("Importing plugin module: %s", plugin)
+            logger.debug("Importing plugin module: '%s'", plugin)
             module: ModuleType | None = self._importer.import_module(plugin)
 
             if module is None:
@@ -53,6 +53,7 @@ class PluginLoader(PluginLoaderProtocol):
 
             if cls is None:
                 continue
+
             plugin_instance: PluginBase = self._factory.get_instance(cls)
 
             if plugin_instance is None:

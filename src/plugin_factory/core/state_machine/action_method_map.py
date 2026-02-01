@@ -1,20 +1,20 @@
 from dataclasses import dataclass
-from typing import Dict, ClassVar
+from typing import Dict, ClassVar, Final
+from types import MappingProxyType
 
 from plugin_factory.core.plugins.plugin_method import PluginMethod
-from plugin_factory.core.state_machine.plugin_action import PluginAction
+from plugin_factory.core.state_machine.fsm_action import FSMAction
 
 
 @dataclass(frozen=True, slots=True)
 class ActionMethodMap:
-    ACTION_METHOD_MAP: ClassVar[Dict[PluginAction, PluginMethod]] = {
-        PluginAction.INIT: PluginMethod.INIT,
-        PluginAction.START: PluginMethod.START,
-        PluginAction.STOP: PluginMethod.STOP,
-        PluginAction.FAIL: PluginMethod.FAIL,
-        PluginAction.RESET: PluginMethod.RESET,
-        PluginAction.RESTART: PluginMethod.RESTART,
+    __ACTION_METHOD_MAP: ClassVar[Dict[FSMAction, PluginMethod]] = {
+        FSMAction.INIT: PluginMethod.INIT,
+        FSMAction.START: PluginMethod.START,
+        FSMAction.STOP: PluginMethod.STOP,
     }
 
-    def get_method_name(self, action: PluginAction) -> PluginMethod:
-        return self.ACTION_METHOD_MAP.get(action)
+    MAPPING: Final[MappingProxyType] = MappingProxyType(__ACTION_METHOD_MAP)
+
+    def get_method_name(self, action: FSMAction) -> PluginMethod:
+        return self.MAPPING.get(action)

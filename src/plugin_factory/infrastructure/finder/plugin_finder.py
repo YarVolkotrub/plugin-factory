@@ -39,7 +39,7 @@ class PluginFinder(StorageProtocol, FinderManagerProtocol):
 
     def __add_file(self, file: Path) -> None:
         if file in self._plugins:
-            logger.warning("Found duplicate plugin file: %s", file)
+            logger.warning("Found duplicate plugin file: '%s'", file)
             return
         self._plugins.append(file)
         logger.debug("Adding plugin file: '%s'", file)
@@ -47,15 +47,15 @@ class PluginFinder(StorageProtocol, FinderManagerProtocol):
     def __validate_directory(self, directory: Path) -> None:
         if not directory.exists():
             logger.error(
-                "Plugins directory does not exist: %s", directory)
+                "Plugins directory does not exist: '%s'", directory)
             raise PluginStorageError(
-                "Plugins directory does not exist: %s", directory)
+                "Plugins directory does not exist: '%s'", directory)
 
         if not directory.is_dir():
             logger.error(
-                "Plugin path is not a directory: %s", directory)
+                "Plugin path is not a directory: '%s'", directory)
             raise PluginStorageError(
-                "Plugin path is not a directory: %s", directory)
+                "Plugin path is not a directory: '%s'", directory)
 
     def __validate_pattern(self, pattern: str) -> None:
         if not isinstance(pattern, str) or not pattern:

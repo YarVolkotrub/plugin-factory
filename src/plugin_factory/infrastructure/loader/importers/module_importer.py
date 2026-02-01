@@ -21,7 +21,7 @@ class ModuleImporter(ImporterProtocol):
             return module
         except Exception as exc:
             logger.error(
-                "Failed to import plugin module '%s': %s",
+                "Failed to import plugin module '%s': '%s'",
                 plugin, exc
             )
             raise PluginImportError(
