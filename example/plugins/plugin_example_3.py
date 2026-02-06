@@ -11,3 +11,6 @@ class ExamplePlugin2(PluginBase):
 
     def start(self) -> None:
         ...
+
+    def shutdown(self) -> None:
+        ...

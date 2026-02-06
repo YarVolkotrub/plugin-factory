@@ -6,8 +6,7 @@ from plugin_factory.infrastructure.loader.importers.module_importer import \
 from plugin_factory.infrastructure.loader.plugin_loader import PluginLoader
 from plugin_factory.infrastructure.loader.scanners.plugin_class_scanner import \
     PluginClassScanner
-from plugin_factory.infrastructure.loader.validators.plugin_config_validator import \
-    StructuralPluginValidator
+
 from plugin_factory.infrastructure.state_machine.lifecycle_manager import \
     LifecycleManager
 from plugin_factory.infrastructure.state_machine.lifecycle_transitions import \
@@ -21,7 +20,6 @@ __all__ = [
     'FactoryPlugin',
     'PluginClassScanner',
     'ModuleImporter',
-    'StructuralPluginValidator'
 ]
 
 

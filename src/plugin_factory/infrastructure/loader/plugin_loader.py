@@ -10,7 +10,6 @@ from plugin_factory.contracts import PluginLoaderProtocol
 if TYPE_CHECKING:
     from plugin_factory.core import PluginBase
     from plugin_factory.contracts import (
-        PluginValidatorProtocol,
         StorageProtocol,
         InstanceProtocol,
         ClassScannerProtocol,
@@ -24,13 +23,11 @@ class PluginLoader(PluginLoaderProtocol):
     def __init__(
         self,
         storage: StorageProtocol,
-        validator: PluginValidatorProtocol,
         importer: ImporterProtocol,
         class_scanner: ClassScannerProtocol,
         factory: InstanceProtocol,
     ) -> None:
         self._storage = storage
-        self._validator = validator
         self._importer = importer
         self._class_scanner = class_scanner
         self._factory = factory
@@ -44,24 +41,10 @@ class PluginLoader(PluginLoaderProtocol):
 
         for plugin in plugins:
             logger.debug("Importing plugin module: '%s'", plugin)
-            module: ModuleType | None = self._importer.import_module(plugin)
+            module: ModuleType = self._importer.import_module(plugin)
 
-            if module is None:
-                continue
-
-            cls: Type[PluginBase] | None = self._class_scanner.get_class(module)
-
-            if cls is None:
-                continue
-
+            cls: Type[PluginBase]  = self._class_scanner.get_class(module)
             plugin_instance: PluginBase = self._factory.get_instance(cls)
-
-            if plugin_instance is None:
-                continue
-
-            if not self._validator.is_valid(plugin_instance, self._plugins):
-                # TODO: unload instance
-                continue
 
             self._plugins[plugin_instance.info.name] = plugin_instance
 

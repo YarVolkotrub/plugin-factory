@@ -7,14 +7,11 @@ from plugin_factory.contracts.infrastructure.instance_protocol import \
     InstanceProtocol
 from plugin_factory.contracts.infrastructure.plugin_louder_protocol import \
     PluginLoaderProtocol
-from plugin_factory.contracts.infrastructure.plugin_validator_protocol import \
-    PluginValidatorProtocol
 from plugin_factory.contracts.infrastructure.storage_protocol import StorageProtocol
 
 
 __all__ = [
     'StorageProtocol',
-    'PluginValidatorProtocol',
     'PluginLoaderProtocol',
     'InstanceProtocol',
     'ClassScannerProtocol',

@@ -11,7 +11,6 @@ from plugin_factory.infrastructure import (
     ModuleImporter,
     PluginLoader,
     PluginClassScanner,
-    StructuralPluginValidator,
     LifecycleManager,
     PluginFinder,
 )
@@ -41,7 +40,6 @@ class PluginManager:
     def __init__(
             self,
             storage: Optional[FinderStorage] | None = None,
-            validator: Optional[PluginValidatorProtocol] = None,
             importer: Optional[ImporterProtocol] = None,
             class_scanner: Optional[ClassScannerProtocol] = None,
             factory: Optional[InstanceProtocol] = None
@@ -56,7 +54,6 @@ class PluginManager:
         self._finder = PluginFinder()
         self._plugins: Dict[str, PluginBase] = {}
 
-        self._validator = validator or StructuralPluginValidator()
         self._importer = importer or ModuleImporter()
         self._class_scanner = class_scanner or PluginClassScanner()
         self._factory = factory or FactoryPlugin()
@@ -99,7 +96,6 @@ class PluginManager:
         try:
             loader = PluginLoader(
                 storage=self._finder,
-                validator=self._validator,
                 importer=self._importer,
                 class_scanner=self._class_scanner,
                 factory=self._factory

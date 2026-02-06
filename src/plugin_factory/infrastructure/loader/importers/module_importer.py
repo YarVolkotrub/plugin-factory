@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import logging
 import sys
+import uuid
 from importlib import util
 from pathlib import Path
 from types import ModuleType
@@ -13,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class ModuleImporter(ImporterProtocol):
-    def import_module(self, plugin: Path) -> ModuleType | None:
+    def import_module(self, plugin: Path) -> ModuleType:
         try:
             plugin_name: str = self.__generate_module_name(plugin)
             module = self.__import_module_from_file(plugin, plugin_name)
@@ -63,4 +64,4 @@ class ModuleImporter(ImporterProtocol):
             ) from exc
 
     def __generate_module_name(self, plugin: Path) -> str:
-        return f"plugin_factory{hash(plugin)}"
+        return f"plugin_factory.plugins.{plugin.stem}_{uuid.uuid4().hex}"
