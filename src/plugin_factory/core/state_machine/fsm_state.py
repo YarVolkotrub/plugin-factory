@@ -8,4 +8,3 @@ class FSMState(IntEnum):
     STARTED = auto()
     STOPPED = auto()
     FAILED = auto()
-

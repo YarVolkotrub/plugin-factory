@@ -1,5 +1,5 @@
 from plugin_factory.contracts.infrastructure.class_scanner_protocol import \
-    ClassScannerProtocol
+    ClassExtractorProtocol
 from plugin_factory.contracts.infrastructure.finder_manager_protocol import FinderManagerProtocol
 from plugin_factory.contracts.infrastructure.importer_protocol import \
     ImporterProtocol
@@ -14,7 +14,7 @@ __all__ = [
     'StorageProtocol',
     'PluginLoaderProtocol',
     'InstanceProtocol',
-    'ClassScannerProtocol',
+    'ClassExtractorProtocol',
     'ImporterProtocol',
     'FinderManagerProtocol',
 ]

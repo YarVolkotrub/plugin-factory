@@ -43,7 +43,8 @@ def main():
     manager.initialize_plugin("Example0")
     print(manager.get_plugin_states())
     print(manager.get_plugin_info())
-    print(manager.get_plugin_error())
+    print(manager.get_plugin_has_error())
+    print(manager.get_plugins_error())
 
 if __name__ == "__main__":
     main()

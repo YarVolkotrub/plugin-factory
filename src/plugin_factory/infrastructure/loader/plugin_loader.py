@@ -12,7 +12,7 @@ if TYPE_CHECKING:
     from plugin_factory.contracts import (
         StorageProtocol,
         InstanceProtocol,
-        ClassScannerProtocol,
+        ClassExtractorProtocol,
         ImporterProtocol,
     )
 
@@ -24,12 +24,12 @@ class PluginLoader(PluginLoaderProtocol):
         self,
         storage: StorageProtocol,
         importer: ImporterProtocol,
-        class_scanner: ClassScannerProtocol,
+        class_extractor: ClassExtractorProtocol,
         factory: InstanceProtocol,
     ) -> None:
         self._storage = storage
         self._importer = importer
-        self._class_scanner = class_scanner
+        self._class_extractor = class_extractor
         self._factory = factory
         self._plugins: Dict[str, PluginBase] = {}
 
@@ -43,7 +43,7 @@ class PluginLoader(PluginLoaderProtocol):
             logger.debug("Importing plugin module: '%s'", plugin)
             module: ModuleType = self._importer.import_module(plugin)
 
-            cls: Type[PluginBase]  = self._class_scanner.get_class(module)
+            cls: Type[PluginBase]  = self._class_extractor.extract_plugin_class(module)
             plugin_instance: PluginBase = self._factory.get_instance(cls)
 
             self._plugins[plugin_instance.info.name] = plugin_instance

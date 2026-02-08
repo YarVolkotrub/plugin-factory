@@ -1,6 +1,8 @@
 from plugin_factory import PluginBase
 
 
+
+
 class ExamplePlugin0(PluginBase):
     """Test plugin 0"""
     NAME = "Example0"
@@ -21,3 +23,5 @@ class ExamplePlugin0(PluginBase):
 
     def reset(self):
         ...
+
+__plugin__ = ExamplePlugin0

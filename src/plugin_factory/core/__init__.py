@@ -15,4 +15,5 @@ __all__ = [
     'PluginMethod',
     'ACTION_METHOD_MAP',
     'FinderStorage',
+    'FSM_TRANSITIONS',
 ]

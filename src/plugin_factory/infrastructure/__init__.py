@@ -4,8 +4,8 @@ from plugin_factory.infrastructure.loader.factories.factory_plugin import \
 from plugin_factory.infrastructure.loader.importers.module_importer import \
     ModuleImporter
 from plugin_factory.infrastructure.loader.plugin_loader import PluginLoader
-from plugin_factory.infrastructure.loader.scanners.plugin_class_scanner import \
-    PluginClassScanner
+from plugin_factory.infrastructure.loader.extractor.plugin_class_extractor import \
+    PluginClassExtractor
 
 from plugin_factory.infrastructure.state_machine.lifecycle_manager import \
     LifecycleManager
@@ -18,7 +18,7 @@ __all__ = [
     'LifecycleTransitions',
     'PluginLoader',
     'FactoryPlugin',
-    'PluginClassScanner',
+    'PluginClassExtractor',
     'ModuleImporter',
 ]
 

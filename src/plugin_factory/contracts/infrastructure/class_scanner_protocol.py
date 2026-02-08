@@ -6,6 +6,6 @@ if TYPE_CHECKING:
     from plugin_factory.core import PluginBase
 
 
-class ClassScannerProtocol(Protocol):
+class ClassExtractorProtocol(Protocol):
     @abstractmethod
-    def get_class(self, module: ModuleType) -> Type[PluginBase]: ...
+    def extract_plugin_class(self, module: ModuleType) -> Type[PluginBase]: ...

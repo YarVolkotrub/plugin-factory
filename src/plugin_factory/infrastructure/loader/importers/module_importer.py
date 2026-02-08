@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import logging
 import sys
 import uuid
 from importlib import util
@@ -9,8 +8,6 @@ from types import ModuleType
 
 from plugin_factory.contracts import ImporterProtocol
 from plugin_factory.exceptions import PluginImportError, PluginStorageError
-
-logger = logging.getLogger(__name__)
 
 
 class ModuleImporter(ImporterProtocol):
@@ -21,12 +18,8 @@ class ModuleImporter(ImporterProtocol):
 
             return module
         except Exception as exc:
-            logger.error(
-                "Failed to import plugin module '%s': '%s'",
-                plugin, exc
-            )
             raise PluginImportError(
-                "Failed to import plugin: '%s'",
+                "Failed to import plugin: '%s'" %
                 plugin
             ) from exc
 
@@ -39,12 +32,12 @@ class ModuleImporter(ImporterProtocol):
             spec = util.spec_from_file_location(module_name, plugin)
         except (ImportError, FileNotFoundError) as exc:
             raise PluginStorageError(
-                "Failed to create import spec for '%s'", plugin
+                "Failed to create import spec for '%s'" % plugin
             ) from exc
 
         if spec is None or spec.loader is None:
             raise PluginStorageError(
-                f"Invalid import spec for plugin file: '%s'", plugin)
+                f"Invalid import spec for plugin file: '%s'" % plugin)
 
         try:
             module: ModuleType = util.module_from_spec(spec)
@@ -60,7 +53,7 @@ class ModuleImporter(ImporterProtocol):
                 FileNotFoundError,
                 AttributeError) as exc:
             raise PluginImportError(
-                "Failed to import plugin module: '%s'", plugin
+                "Failed to import plugin module: '%s'" % plugin
             ) from exc
 
     def __generate_module_name(self, plugin: Path) -> str:

@@ -10,7 +10,7 @@ from plugin_factory.infrastructure import (
     FactoryPlugin,
     ModuleImporter,
     PluginLoader,
-    PluginClassScanner,
+    PluginClassExtractor,
     LifecycleManager,
     PluginFinder,
 )
@@ -19,8 +19,7 @@ if TYPE_CHECKING:
     from plugin_factory.core.plugins.plugin_base import PluginBase
     from plugin_factory.contracts import (
         ImporterProtocol,
-        PluginValidatorProtocol,
-        ClassScannerProtocol,
+        ClassExtractorProtocol,
         InstanceProtocol,
     )
 
@@ -41,12 +40,12 @@ class PluginManager:
             self,
             storage: Optional[FinderStorage] | None = None,
             importer: Optional[ImporterProtocol] = None,
-            class_scanner: Optional[ClassScannerProtocol] = None,
+            class_scanner: Optional[ClassExtractorProtocol] = None,
             factory: Optional[InstanceProtocol] = None
     ) -> None:
         if storage is not None and not isinstance(storage, FinderStorage):
             raise TypeError(
-                "storage must be FinderStorage or None, got %r",
+                "storage must be FinderStorage or None, got %r" %
                 type(storage).__name__
             )
 
@@ -55,14 +54,14 @@ class PluginManager:
         self._plugins: Dict[str, PluginBase] = {}
 
         self._importer = importer or ModuleImporter()
-        self._class_scanner = class_scanner or PluginClassScanner()
+        self._class_scanner = class_scanner or PluginClassExtractor()
         self._factory = factory or FactoryPlugin()
 
         logger.debug("PluginManager initialized")
 
     def setup(self, storage: FinderStorage) -> PluginManager:
         if storage.path is None or not storage.path.exists():
-            raise ValueError(f"Invalid storage path: {storage.path}")
+            raise ValueError("Invalid storage path: %s" % storage.path)
 
         self._storage = storage
 
@@ -97,7 +96,7 @@ class PluginManager:
             loader = PluginLoader(
                 storage=self._finder,
                 importer=self._importer,
-                class_scanner=self._class_scanner,
+                class_extractor=self._class_scanner,
                 factory=self._factory
             )
 
@@ -106,7 +105,7 @@ class PluginManager:
             return MappingProxyType(self._plugins)
 
         except Exception as exc:
-            raise RuntimeError(f"Plugin loading failed: %s", exc) from exc
+            raise RuntimeError(f"Plugin loading failed: %s" % exc) from exc
 
     @property
     def plugins(self) -> MappingProxyType[str, PluginBase]:
