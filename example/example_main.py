@@ -5,7 +5,7 @@ from pathlib import Path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
-from plugin_factory import Lifecycle, FinderStorage, PluginManager
+from plugin_factory import FinderStorage, PluginManager
 
 
 logging.basicConfig(
@@ -26,8 +26,7 @@ def main():
     plugin_manager.load()
     plugins = plugin_manager.plugins
 
-    lifecycle_manager = Lifecycle()
-    manager = lifecycle_manager.execute
+    manager = plugin_manager.lifecycle
 
     manager.add_plugins(plugins)
     manager.init_all_plugin()

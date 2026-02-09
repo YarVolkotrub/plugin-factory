@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import logging
 from pathlib import Path
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Dict, Sequence, Optional
@@ -23,17 +22,6 @@ if TYPE_CHECKING:
         InstanceProtocol,
     )
 
-logger = logging.getLogger(__name__)
-
-
-class Lifecycle:
-    def __init__(self):
-        self._lifecycle: LifecycleManager = LifecycleManager(FSM_TRANSITIONS)
-
-    @property
-    def execute(self) -> LifecycleManager:
-        return self._lifecycle
-
 
 class PluginManager:
     def __init__(
@@ -49,6 +37,7 @@ class PluginManager:
                 type(storage).__name__
             )
 
+        self._lifecycle: LifecycleManager = LifecycleManager(FSM_TRANSITIONS)
         self._storage = storage
         self._finder = PluginFinder()
         self._plugins: Dict[str, PluginBase] = {}
@@ -57,7 +46,16 @@ class PluginManager:
         self._class_scanner = class_scanner or PluginClassExtractor()
         self._factory = factory or FactoryPlugin()
 
-        logger.debug("PluginManager initialized")
+    @property
+    def lifecycle(self) -> LifecycleManager:
+        return self._lifecycle
+
+    @property
+    def plugins(self) -> MappingProxyType[str, PluginBase]:
+        if not self._plugins:
+            raise RuntimeError("Plugins not loaded. Call load() first.")
+
+        return MappingProxyType(self._plugins)
 
     def setup(self, storage: FinderStorage) -> PluginManager:
         if storage.path is None or not storage.path.exists():
@@ -106,10 +104,3 @@ class PluginManager:
 
         except Exception as exc:
             raise RuntimeError(f"Plugin loading failed: %s" % exc) from exc
-
-    @property
-    def plugins(self) -> MappingProxyType[str, PluginBase]:
-        if not self._plugins:
-            raise RuntimeError("Plugins not loaded. Call load() first.")
-
-        return MappingProxyType(self._plugins)

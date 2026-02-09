@@ -14,4 +14,5 @@ class ExamplePlugin1(PluginBase):
 
     def shutdown(self) -> None:
         ...
+
 __plugin__ = ExamplePlugin1
