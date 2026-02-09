@@ -19,8 +19,7 @@ class ModuleImporter(ImporterProtocol):
             return module
         except Exception as exc:
             raise PluginImportError(
-                "Failed to import plugin: '%s'" %
-                plugin
+                f"Failed to import plugin: '{plugin}'"
             ) from exc
 
     def __import_module_from_file(
@@ -32,12 +31,12 @@ class ModuleImporter(ImporterProtocol):
             spec = util.spec_from_file_location(module_name, plugin)
         except (ImportError, FileNotFoundError) as exc:
             raise PluginStorageError(
-                "Failed to create import spec for '%s'" % plugin
+                f"Failed to create import spec for '{plugin}'"
             ) from exc
 
         if spec is None or spec.loader is None:
             raise PluginStorageError(
-                f"Invalid import spec for plugin file: '%s'" % plugin)
+                f"Invalid import spec for plugin file: '{plugin}'")
 
         try:
             module: ModuleType = util.module_from_spec(spec)
@@ -53,7 +52,7 @@ class ModuleImporter(ImporterProtocol):
                 FileNotFoundError,
                 AttributeError) as exc:
             raise PluginImportError(
-                "Failed to import plugin module: '%s'" % plugin
+                f"Failed to import plugin module: '{plugin}'"
             ) from exc
 
     def __generate_module_name(self, plugin: Path) -> str:

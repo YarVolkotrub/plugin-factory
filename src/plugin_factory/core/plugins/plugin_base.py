@@ -27,7 +27,8 @@ class PluginBase(ABC):
     @final
     def _apply_info(self, info: PluginInfo) -> None:
         """The internal method for applying the plugin information
-        is called only during the creation of the plugin instance"""
+        is called only during the creation of the plugin instance
+        and used by FSM"""
         self._info = info
 
     @abstractmethod

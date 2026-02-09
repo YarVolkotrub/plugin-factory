@@ -33,14 +33,14 @@ class PluginLoader(PluginLoaderProtocol):
         self._factory = factory
         self._plugins: Dict[str, PluginBase] = {}
 
-        logger.debug("Initialized %s", self.__class__.__name__)
+        logger.debug(f"Initialized {self.__class__.__name__}")
 
     def load(self) -> MappingProxyType[str, PluginBase]:
         plugins: Sequence[Path] = self._storage.plugins
-        logger.info("Found %d file(s) to scan", len(plugins))
+        logger.info(f"Found {len(plugins)} file(s) to scan")
 
         for plugin in plugins:
-            logger.debug("Importing plugin module: '%s'", plugin)
+            logger.debug(f"Importing plugin module: '{plugin}'")
             module: ModuleType = self._importer.import_module(plugin)
 
             cls: Type[PluginBase]  = self._class_extractor.extract_plugin_class(module)
@@ -48,7 +48,6 @@ class PluginLoader(PluginLoaderProtocol):
 
             self._plugins[plugin_instance.info.name] = plugin_instance
 
-        logger.info("Plugin loading completed, total %d",
-                    len(self._plugins))
+        logger.info(f"Plugin loading completed, total {len(self._plugins)}"                    )
 
         return MappingProxyType(self._plugins)

@@ -5,6 +5,7 @@ from types import MappingProxyType
 from typing import TYPE_CHECKING, Dict
 
 from plugin_factory.core import ACTION_METHOD_MAP
+from plugin_factory.exceptions import PluginStateError
 
 if TYPE_CHECKING:
     from plugin_factory.core import (
@@ -32,11 +33,10 @@ class LifecycleTransitions:
         next_state = self.__get_next_state(current_state, action)
 
         if next_state not in self.__allow_state_transitions:
-            logger.warning(
-                "Failed to perform transition for "
-                "plugin: '%s'; action: '%s'; to state '%s'.",
-                plugin.info.name, action.name, current_state.name)
-            return
+            raise PluginStateError(
+                f"Transition not allowed: "
+                f"state={current_state.name}, action={action.name}"
+            )
 
         try:
             self.__execute_plugin_action(plugin, action)
@@ -52,7 +52,10 @@ class LifecycleTransitions:
             action: FSMAction
     ) -> FSMState | None:
         if not self.__is_action_allowed(current_state, action):
-            return None
+            raise PluginStateError(
+                f"Action '{action.name}' "
+                f"not allowed from state '{current_state.name}'"
+            )
         return self.__allow_state_transitions[current_state][action]
 
     def __is_action_allowed(

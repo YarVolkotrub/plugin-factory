@@ -33,8 +33,8 @@ class PluginManager:
     ) -> None:
         if storage is not None and not isinstance(storage, FinderStorage):
             raise TypeError(
-                "storage must be FinderStorage or None, got %r" %
-                type(storage).__name__
+                f"storage must be FinderStorage or None, "
+                f"got {type(storage).__name_}"
             )
 
         self._lifecycle: LifecycleManager = LifecycleManager(FSM_TRANSITIONS)
@@ -59,7 +59,7 @@ class PluginManager:
 
     def setup(self, storage: FinderStorage) -> PluginManager:
         if storage.path is None or not storage.path.exists():
-            raise ValueError("Invalid storage path: %s" % storage.path)
+            raise ValueError(f"Invalid storage path: {storage}")
 
         self._storage = storage
 
@@ -103,4 +103,4 @@ class PluginManager:
             return MappingProxyType(self._plugins)
 
         except Exception as exc:
-            raise RuntimeError("Plugin loading failed: %s" % exc) from exc
+            raise RuntimeError(f"Plugin loading failed: {exc}") from exc

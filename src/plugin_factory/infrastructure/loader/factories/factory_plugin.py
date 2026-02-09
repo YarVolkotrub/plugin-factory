@@ -23,14 +23,14 @@ class FactoryPlugin(InstanceProtocol):
             return plugin_class(info)
         except TypeError as exc:
             raise PluginInstantiationError(
-                "Failed to instantiate plugin '%s': '%s'"
-                "invalid constructor signature" %
-                plugin_class.__name__, exc
+                f"Failed to instantiate plugin "
+                f"'{plugin_class.__name__}': '{exc}'"
+                "invalid constructor signature"
             ) from exc
         except Exception as exc:
             raise PluginInstantiationError(
-                "Failed to instantiate plugin '%s': '%s'" %
-                plugin_class.__name__, exc
+                f"Failed to instantiate plugin "
+                f"'{plugin_class.__name__}': '{exc}'"
             ) from exc
 
     def __validate_plugin_class(self, plugin_class: Type[PluginBase]) -> None:

@@ -30,30 +30,31 @@ class PluginFinder(StorageProtocol, FinderManagerProtocol):
             files: List[Path] = list(storage.path.rglob(storage.pattern))
         except (OSError, PermissionError) as exc:
             raise PluginStorageError(
-                "Failed to scan plugins directory: '%s'" % storage.path
+                f"Failed to scan plugins directory: '{storage}'"
             ) from exc
 
         for file in files:
             if file.is_file():
                 self.__add_file(file)
 
-        logger.debug("Found %s plugin file(s)", len(self._plugins))
+        logger.debug(f"Found {len(self._plugins)} plugin file(s)")
 
     def __add_file(self, file: Path) -> None:
         if file in self._plugins:
-            logger.warning("Found duplicate plugin file: '%s'" % file)
+            logger.warning(f"Found duplicate plugin file: '{file}'")
             return
         self._plugins.append(file)
-        logger.debug("Adding plugin file: '%s'", file)
+        logger.debug(f"Adding plugin file: '{file}'")
 
     def __validate_directory(self, directory: Path) -> None:
         if not directory.exists():
             raise PluginStorageError(
-                "Plugins directory does not exist: '%s'" % directory)
+                f"Plugins directory does not exist: '{directory}'"
+            )
 
         if not directory.is_dir():
             raise PluginStorageError(
-                "Plugin path is not a directory: '%s'" % directory)
+                f"Plugin path is not a directory: '{directory}'")
 
     def __validate_pattern(self, pattern: str) -> None:
         if not isinstance(pattern, str) or not pattern:

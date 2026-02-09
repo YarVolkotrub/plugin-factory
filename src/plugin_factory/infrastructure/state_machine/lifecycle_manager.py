@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from types import MappingProxyType
-from typing import Mapping, TYPE_CHECKING, Dict
+from typing import Mapping, TYPE_CHECKING, Dict, Optional
 
 from plugin_factory.core import FSMAction
 from plugin_factory.exceptions import PluginStateError
@@ -28,19 +28,19 @@ class LifecycleManager:
         self._state_transitions = LifecycleTransitions(allow_state)
 
 # region Plugin Information Methods
-    def get_plugin_info(self) -> Mapping[str, PluginInfo]:
-        return {name: plugin.info
-                for name, plugin in self._plugins.items()}
+    def get_plugin_info(self) -> MappingProxyType[str, PluginInfo]:
+        return MappingProxyType({name: plugin.info
+                for name, plugin in self._plugins.items()})
 
-    def get_plugin_states(self) -> Mapping[str, FSMState]:
-        return {name: plugin.info.state
-                for name, plugin in self._plugins.items()}
+    def get_plugin_states(self) -> MappingProxyType[str, FSMState]:
+        return MappingProxyType({name: plugin.info.state
+                for name, plugin in self._plugins.items()})
 
-    def get_plugin_has_error(self):
+    def get_plugin_has_error(self) -> Mapping[str, bool] :
         return {name: plugin.info.has_error
                 for name, plugin in self._plugins.items()}
 
-    def get_plugins_error(self):
+    def get_plugins_error(self) -> Mapping[str, Optional[BaseException]] :
         return {name: plugin.info.error
                 for name, plugin in self._plugins.items()
                 if plugin.info.has_error}
@@ -50,20 +50,9 @@ class LifecycleManager:
     def add_plugins(self, plugins: Mapping[str, PluginBase]) -> None:
         for name in plugins:
             if name in self._plugins:
-                raise PluginStateError(f"Plugin '$s' already exists" % name)
+                raise PluginStateError(f"Plugin '{name}' already exists")
 
         self._plugins.update(plugins)
-
-    def add_plugin_force(self, plugins: Mapping[str, PluginBase]) -> None:
-        new_plugins: Mapping[str, PluginBase] = {}
-
-        for name, plugin in plugins.items():
-            if self.__is_plugin_exist(name):
-                logger.warning("Plugin %s already exists", name)
-            else:
-                new_plugins[name] = plugin
-
-        self._plugins.update(new_plugins)
 # endregion
 
 # region method for all plugin
@@ -95,14 +84,14 @@ class LifecycleManager:
         self.__change_state(FSMAction.STOP, plugin)
 
 # endregion
-    def __require_plugin(self, plugin_name) -> PluginBase:
+    def __require_plugin(self, plugin_name: str) -> PluginBase:
         if not plugin_name or not isinstance(plugin_name, str):
-            raise PluginStateError("Invalid plugin name: %s" % plugin_name)
+            raise PluginStateError(f"Invalid plugin name: {plugin_name}")
 
         try:
             return self._plugins[plugin_name]
         except KeyError:
-            raise PluginStateError("Plugin '%s' not found" % plugin_name)
+            raise PluginStateError(f"Plugin '{plugin_name}' not found")
 
     def __is_plugin_exist(self, plugin_name: str) -> bool:
         return plugin_name in self._plugins
@@ -110,8 +99,8 @@ class LifecycleManager:
     def __change_state(self, action: FSMAction, plugin: PluginBase) -> None:
         self._state_transitions.perform_transition(plugin, action)
         logger.info(
-            "FSM transition plugin=%s action=%s state=%s",
-            plugin.info.name,
-            action.name,
-            plugin.info.state.name,
+            f"FSM transition "
+            f"plugin={plugin.info.name} "
+            f"action={action.name} "
+            f"state={plugin.info.state.name}"
         )
