@@ -103,4 +103,4 @@ class PluginManager:
             return MappingProxyType(self._plugins)
 
         except Exception as exc:
-            raise RuntimeError(f"Plugin loading failed: %s" % exc) from exc
+            raise RuntimeError("Plugin loading failed: %s" % exc) from exc

@@ -19,7 +19,7 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-# TODO больше методов взаимодействия
+
 class LifecycleManager:
     def __init__(self, allow_state: MappingProxyType[
         FSMState,Dict[FSMAction, FSMState]
@@ -48,13 +48,9 @@ class LifecycleManager:
 
 # region method add plugin
     def add_plugins(self, plugins: Mapping[str, PluginBase]) -> None:
-        for plugin_name in plugins.keys():
-            if self.__is_plugin_exist(plugin_name):
-                logger.warning(
-                    "Plugin %s already exists",
-                    plugin_name
-                )
-                return
+        for name in plugins:
+            if name in self._plugins:
+                raise PluginStateError(f"Plugin '$s' already exists" % name)
 
         self._plugins.update(plugins)
 
@@ -89,47 +85,17 @@ class LifecycleManager:
     def initialize_plugin(self, plugin_name: str) -> None:
         plugin = self.__require_plugin(plugin_name)
         self.__change_state(FSMAction.INIT, plugin)
-        self.__log_transition(
-            plugin.info.name,
-            plugin.info.state.name,
-            FSMAction.INIT.name
-        )
-
 
     def start_plugin(self, plugin_name: str) -> None:
         plugin = self.__require_plugin(plugin_name)
         self.__change_state(FSMAction.START, plugin)
-        self.__log_transition(
-            plugin.info.name,
-            plugin.info.state.name,
-            FSMAction.START.name
-        )
 
     def stop_plugin(self, plugin_name: str) -> None:
         plugin = self.__require_plugin(plugin_name)
         self.__change_state(FSMAction.STOP, plugin)
-        self.__log_transition(
-            plugin.info.name,
-            plugin.info.state.name,
-            FSMAction.STOP.name
-        )
 
 # endregion
-
-    def __log_transition(
-            self,
-            plugin_name: str,
-            plugin_state: str,
-            action: str
-    ) -> None:
-        logger.info(
-            "FSM transition plugin=%s action=%s state=%s",
-            plugin_name,
-            action,
-            plugin_state,
-        )
-
-    def __require_plugin(self, plugin_name) -> PluginBase | None:
+    def __require_plugin(self, plugin_name) -> PluginBase:
         if not plugin_name or not isinstance(plugin_name, str):
             raise PluginStateError("Invalid plugin name: %s" % plugin_name)
 
@@ -139,8 +105,13 @@ class LifecycleManager:
             raise PluginStateError("Plugin '%s' not found" % plugin_name)
 
     def __is_plugin_exist(self, plugin_name: str) -> bool:
-        logger.debug("Checking if plugin exist: %s" % plugin_name)
         return plugin_name in self._plugins
 
     def __change_state(self, action: FSMAction, plugin: PluginBase) -> None:
         self._state_transitions.perform_transition(plugin, action)
+        logger.info(
+            "FSM transition plugin=%s action=%s state=%s",
+            plugin.info.name,
+            action.name,
+            plugin.info.state.name,
+        )
