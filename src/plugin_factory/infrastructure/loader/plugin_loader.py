@@ -44,6 +44,8 @@ class PluginLoader(PluginLoaderProtocol):
             module: ModuleType = self._importer.import_module(plugin)
 
             cls: Type[PluginBase]  = self._class_extractor.extract_plugin_class(module)
+            assert module.__plugin__ is cls
+
             plugin_instance: PluginBase = self._factory.get_instance(cls)
 
             self._plugins[plugin_instance.info.name] = plugin_instance

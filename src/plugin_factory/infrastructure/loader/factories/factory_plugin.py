@@ -46,5 +46,4 @@ class FactoryPlugin(InstanceProtocol):
             raise PluginInstantiationError("Plugin must define DESCRIPTION")
 
         if not isinstance(plugin_class.DESCRIPTION, str):
-            raise PluginInstantiationError(
-                "Plugin DESCRIPTION must be string")
+            raise PluginInstantiationError("Plugin DESCRIPTION must be string")

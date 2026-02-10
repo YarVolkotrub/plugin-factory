@@ -30,8 +30,7 @@ class PluginFinder(StorageProtocol, FinderManagerProtocol):
             files: List[Path] = list(storage.path.rglob(storage.pattern))
         except (OSError, PermissionError) as exc:
             raise PluginStorageError(
-                f"Failed to scan plugins directory: '{storage}'"
-            ) from exc
+                f"Failed to scan plugins directory: '{storage}'") from exc
 
         for file in files:
             if file.is_file():
@@ -49,8 +48,7 @@ class PluginFinder(StorageProtocol, FinderManagerProtocol):
     def __validate_directory(self, directory: Path) -> None:
         if not directory.exists():
             raise PluginStorageError(
-                f"Plugins directory does not exist: '{directory}'"
-            )
+                f"Plugins directory does not exist: '{directory}'")
 
         if not directory.is_dir():
             raise PluginStorageError(

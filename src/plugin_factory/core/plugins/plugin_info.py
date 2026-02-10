@@ -16,9 +16,16 @@ class PluginInfo:
     name: str
     state: FSMState = field(default=FSMState.CREATED)
     description: Optional[str] = field(default=None, compare=False)
-    error: Optional[BaseException] = field(default=None, compare=False, repr=False)
+    error: Optional[BaseException] = field(
+        default=None, compare=False, repr=False)
 
     def __post_init__(self):
+        if not isinstance(self.state, FSMState):
+            raise TypeError("state must be FSMState")
+
+        if self.error is not None and not isinstance(self.error, Exception):
+            raise TypeError("error must be Exception or None")
+
         if not self.name:
             raise ConfigurationError("Plugin name is empty")
 
@@ -35,11 +42,27 @@ class PluginInfo:
 
     def switch_state(self, new_state: FSMState):
         """Switch the state of the plugin."""
+        if not isinstance(new_state, FSMState):
+            raise TypeError("new_state must be FSMState")
+
         if new_state is FSMState.FAILED:
             raise ValueError("Use fail()")
 
-        return replace(self, state=new_state)
+        new_info: PluginInfo = replace(self, state=new_state)
 
-    def fail(self, exc: BaseException) -> PluginInfo:
+        assert new_info is not self
+        assert new_info.state is new_state
+
+        return new_info
+
+    def fail(self, error: BaseException) -> PluginInfo:
         """Set the error of the plugin."""
-        return replace(self, state=FSMState.FAILED, error=exc)
+        if not isinstance(error, Exception):
+            raise TypeError("error must be Exception")
+
+        new_info: PluginInfo = replace(self, state=FSMState.FAILED, error=error)
+
+        assert new_info is not self
+        assert new_info.error is error
+
+        return new_info

@@ -1,7 +1,7 @@
 # Plugin Factory
 
 ## Описание
-**Plugin Factory** — это расширяемый Python‑фреймворк для создания, загрузки и управления жизненным циклом плагинов. Проект предназначен для построения модульных приложений, где бизнес‑функциональность подключается и управляется динамически через единый контракт.
+**Plugin Factory** - это Python‑фреймворк для создания, загрузки и управления жизненным циклом плагинов.
 
 Ключевые цели проекта:
 - строгий контракт плагина;
@@ -16,16 +16,15 @@ Python 3.11+
 
 ## Статус проекта
 
-Проект находится в стадии **MVP**.
+Проект находится в стадии **pre-prod**.
 
 ### Известные ограничения
-- FSM: не все переходы реализованы
-- API / Lifecycle / PluginManager временно разделены
-- Отсутствуют unit-тесты
+см. в:
+[docs/TODO.md](https://github.com/YarVolkotrub/plugin-factory/blob/main/docs/TODO.md)
 
 ### Технические примечания
-- `example_main.py` - временный файл для локального тестирования
-- `example/plugins` содержит тестовые и намеренно некорректные плагины
+- `example_main.py` - временный 'main' файл для локального тестирования
+- `example/plugins` содержит тестовые плагины для локального тестирования
 
 ## Ключевые возможности
 
@@ -59,6 +58,4 @@ plugin-factory/
 Подробное описание см. в:
 [docs/plugin_system_architecture.md](https://github.com/YarVolkotrub/plugin-factory/blob/main/docs/plugin_system_architecture.md)
 
-## Планы развития TODO и долги
-см. в:
-[docs/TODO.md](https://github.com/YarVolkotrub/plugin-factory/blob/main/docs/TODO.md)
+___

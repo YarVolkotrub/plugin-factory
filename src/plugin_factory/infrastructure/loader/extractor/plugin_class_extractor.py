@@ -15,8 +15,7 @@ class PluginClassExtractor(ClassExtractorProtocol):
             plugin_cls = module.__plugin__
         except AttributeError:
             raise PluginDefinitionError(
-                f"Module '{module.__name__}' does not define __plugin__"
-            )
+                f"Module '{module.__name__}' does not define __plugin__")
 
         if not issubclass(plugin_cls, PluginBase):
             raise PluginDefinitionError(

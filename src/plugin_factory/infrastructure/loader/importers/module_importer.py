@@ -31,8 +31,7 @@ class ModuleImporter(ImporterProtocol):
             spec = util.spec_from_file_location(module_name, plugin)
         except (ImportError, FileNotFoundError) as exc:
             raise PluginStorageError(
-                f"Failed to create import spec for '{plugin}'"
-            ) from exc
+                f"Failed to create import spec for '{plugin}'") from exc
 
         if spec is None or spec.loader is None:
             raise PluginStorageError(
@@ -52,8 +51,7 @@ class ModuleImporter(ImporterProtocol):
                 FileNotFoundError,
                 AttributeError) as exc:
             raise PluginImportError(
-                f"Failed to import plugin module: '{plugin}'"
-            ) from exc
+                f"Failed to import plugin module: '{plugin}'") from exc
 
     def __generate_module_name(self, plugin: Path) -> str:
         return f"plugin_factory.plugins.{plugin.stem}_{uuid.uuid4().hex}"

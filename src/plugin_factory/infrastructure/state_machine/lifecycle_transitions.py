@@ -12,7 +12,6 @@ if TYPE_CHECKING:
         FSMAction,
         FSMState,
         PluginBase,
-        PluginMethod,
     )
 
 logger = logging.getLogger(__name__)
@@ -32,25 +31,19 @@ class LifecycleTransitions:
         current_state = plugin.info.state
         next_state = self.__get_next_state(current_state, action)
 
-        if next_state not in self.__allow_state_transitions:
-            raise PluginStateError(
-                f"Transition not allowed: "
-                f"state={current_state.name}, action={action.name}"
-            )
-
         try:
             self.__execute_plugin_action(plugin, action)
-            new_info = plugin.info.switch_state(next_state)
-            plugin._apply_info(new_info)
+            plugin._apply_info(plugin.info.switch_state(next_state))
         except Exception as exc:
-            new_info = plugin.info.fail(exc)
-            plugin._apply_info(new_info)
+            plugin._apply_info(plugin.info.fail(exc))
+            logger.exception(
+                f"Plugin '{plugin.info.name}' "
+                f"failed during action '{action.name}'",
+            )
+            raise
 
-    def __get_next_state(
-            self,
-            current_state: FSMState,
-            action: FSMAction
-    ) -> FSMState | None:
+    def __get_next_state(self, current_state: FSMState,
+                         action: FSMAction) -> FSMState:
         if not self.__is_action_allowed(current_state, action):
             raise PluginStateError(
                 f"Action '{action.name}' "
@@ -71,7 +64,7 @@ class LifecycleTransitions:
             plugin: PluginBase,
             action: FSMAction
     ) -> None:
-        method = self.__get_plugin_method(plugin, action)
+        method: object = self.__get_plugin_method(plugin, action)
 
         if method is None or not callable(method):
             return
@@ -83,6 +76,16 @@ class LifecycleTransitions:
             plugin: PluginBase,
             action: FSMAction
     ) -> object | None:
-        method_name: PluginMethod = ACTION_METHOD_MAP[action]
+        try:
+            method_name: str = ACTION_METHOD_MAP[action]
+            method: object = getattr(plugin, method_name, None)
 
-        return getattr(plugin, method_name, None)
+            if method is None:
+                raise PluginStateError(
+                    f"Plugin missing lifecycle method: {action.name}")
+
+        except KeyError:
+            raise PluginStateError(
+                f"No method mapped for action '{action.name}'")
+
+        return method
