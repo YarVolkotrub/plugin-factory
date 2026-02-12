@@ -56,6 +56,6 @@ plugin-factory/
 ## Контракт плагина, жизненный цикл и основные требования к реализации и изменению
 
 Подробное описание см. в:
-[docs/plugin_system_architecture.md](https://github.com/YarVolkotrub/plugin-factory/blob/main/docs/plugin_system_architecture.md)
+[docs/plugin_system_architecture.md](https://github.com/YarVolkotrub/plugin-factory/tree/main/docs)
 
 ___
