@@ -6,30 +6,30 @@ from typing import TYPE_CHECKING, Dict, Sequence, Optional
 
 from plugin_factory.core import FinderStorage, FSM_TRANSITIONS
 from plugin_factory.infrastructure import (
-    FactoryPlugin,
-    ModuleImporter,
+    PluginInstanceFactory,
+    ImportlibModuleImporter,
     PluginLoader,
-    PluginClassExtractor,
-    LifecycleManager,
+    ClassExtractor,
+    PluginLifecycleController,
     PluginFinder,
 )
 
 if TYPE_CHECKING:
     from plugin_factory.core.plugins.plugin_base import PluginBase
-    from plugin_factory.contracts import (
+    from plugin_factory.interfaces import (
         ImporterProtocol,
         ClassExtractorProtocol,
-        InstanceProtocol,
+        PluginInstanceProtocol,
     )
 
 
-class PluginManager:
+class PluginFactoryManager:
     def __init__(
             self,
             storage: Optional[FinderStorage] | None = None,
             importer: Optional[ImporterProtocol] = None,
             class_scanner: Optional[ClassExtractorProtocol] = None,
-            factory: Optional[InstanceProtocol] = None
+            factory: Optional[PluginInstanceProtocol] = None
     ) -> None:
         if storage is not None and not isinstance(storage, FinderStorage):
             raise TypeError(
@@ -37,17 +37,17 @@ class PluginManager:
                 f"got {type(storage).__name_}"
             )
 
-        self._lifecycle: LifecycleManager = LifecycleManager(FSM_TRANSITIONS)
+        self._lifecycle: PluginLifecycleController = PluginLifecycleController(FSM_TRANSITIONS)
         self._storage = storage
         self._finder = PluginFinder()
         self._plugins: Dict[str, PluginBase] = {}
 
-        self._importer = importer or ModuleImporter()
-        self._class_scanner = class_scanner or PluginClassExtractor()
-        self._factory = factory or FactoryPlugin()
+        self._importer = importer or ImportlibModuleImporter()
+        self._class_scanner = class_scanner or ClassExtractor()
+        self._factory = factory or PluginInstanceFactory()
 
     @property
-    def lifecycle(self) -> LifecycleManager:
+    def lifecycle(self) -> PluginLifecycleController:
         return self._lifecycle
 
     @property
@@ -57,7 +57,7 @@ class PluginManager:
 
         return MappingProxyType(self._plugins)
 
-    def setup(self, storage: FinderStorage) -> PluginManager:
+    def setup(self, storage: FinderStorage) -> PluginFactoryManager:
         if storage.path is None or not storage.path.exists():
             raise ValueError(f"Invalid storage path: {storage}")
 

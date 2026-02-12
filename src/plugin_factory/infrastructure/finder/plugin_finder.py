@@ -4,14 +4,14 @@ import logging
 from pathlib import Path
 from typing import Sequence, List
 
-from plugin_factory.contracts import FinderManagerProtocol, StorageProtocol
+from plugin_factory.interfaces import PluginDiscoveryProtocol, PluginStorageProtocol
 from plugin_factory.core import FinderStorage
 from plugin_factory.exceptions import PluginStorageError
 
 logger = logging.getLogger(__name__)
 
 
-class PluginFinder(StorageProtocol, FinderManagerProtocol):
+class PluginFinder(PluginStorageProtocol, PluginDiscoveryProtocol):
     def __init__(self) -> None:
         self._plugins: List[Path] = []
 

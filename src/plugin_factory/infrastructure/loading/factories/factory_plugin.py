@@ -2,20 +2,20 @@ from __future__ import annotations
 
 from typing import Type, TYPE_CHECKING
 
-from plugin_factory.contracts import InstanceProtocol
-from plugin_factory.core import PluginInfo
+from plugin_factory.interfaces import PluginInstanceProtocol
+from plugin_factory.core import PluginMetadata
 from plugin_factory.exceptions import PluginInstantiationError
 
 if TYPE_CHECKING:
     from plugin_factory.core import PluginBase
 
 
-class FactoryPlugin(InstanceProtocol):
+class PluginInstanceFactory(PluginInstanceProtocol):
     def get_instance(self, plugin_class: Type[PluginBase]) -> PluginBase:
         try:
             self.__validate_plugin_class(plugin_class)
 
-            info = PluginInfo(
+            info = PluginMetadata(
                 name=plugin_class.NAME,
                 description=plugin_class.DESCRIPTION,
             )

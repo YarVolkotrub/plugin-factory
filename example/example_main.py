@@ -5,7 +5,7 @@ from pathlib import Path
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
-from plugin_factory import FinderStorage, PluginManager
+from plugin_factory import FinderStorage, PluginFactoryManager
 
 
 logging.basicConfig(
@@ -19,8 +19,8 @@ def main():
     pattern = "plugin*.py"
 
     plugin_files = FinderStorage(pattern, plugin_dir)
-    plugin_manager = PluginManager(storage=plugin_files)
-    # plugin_manager = PluginManager()
+    plugin_manager = PluginFactoryManager(storage=plugin_files)
+    # plugin_manager = PluginFactoryManager()
     # plugin_manager.setup(plugin_files)
     plugin_manager.discover()
     plugin_manager.load()
@@ -30,13 +30,13 @@ def main():
 
     manager.add_plugins(plugins)
     manager.init_all_plugin()
-    manager.get_plugin_info()
+    manager.get_plugin_metadata()
     manager.start_all_plugin()
-    manager.get_plugin_info()
+    manager.get_plugin_metadata()
     manager.stop_all_plugin()
-    manager.get_plugin_info()
+    manager.get_plugin_metadata()
     print(manager.get_plugin_states())
-    print(manager.get_plugin_info())
+    print(manager.get_plugin_metadata())
     print(manager.get_plugin_has_error())
     print(manager.get_plugins_error())
 

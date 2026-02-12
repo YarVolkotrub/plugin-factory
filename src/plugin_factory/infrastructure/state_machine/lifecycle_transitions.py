@@ -4,7 +4,7 @@ import logging
 from types import MappingProxyType
 from typing import TYPE_CHECKING, Dict
 
-from plugin_factory.core import ACTION_METHOD_MAP
+from plugin_factory.core import ACTION_TO_METHOD_MAP
 from plugin_factory.exceptions import PluginStateError
 
 if TYPE_CHECKING:
@@ -77,7 +77,7 @@ class LifecycleTransitions:
             action: FSMAction
     ) -> object | None:
         try:
-            method_name: str = ACTION_METHOD_MAP[action]
+            method_name: str = ACTION_TO_METHOD_MAP[action]
             method: object = getattr(plugin, method_name, None)
 
             if method is None:

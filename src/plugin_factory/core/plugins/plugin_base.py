@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, final
 
 if TYPE_CHECKING:
-    from plugin_factory.core import PluginInfo
+    from plugin_factory.core import PluginMetadata
 
 
 class PluginBase(ABC):
@@ -16,16 +16,16 @@ class PluginBase(ABC):
     NAME: str
     DESCRIPTION: str | None = None
 
-    def __init__(self, info: PluginInfo):
+    def __init__(self, info: PluginMetadata):
         self._info = info
 
     @property
-    def info(self) -> PluginInfo:
+    def info(self) -> PluginMetadata:
         """Return frozen-dataclass the plugin info."""
         return self._info
 
     @final
-    def _apply_info(self, info: PluginInfo) -> None:
+    def _apply_info(self, info: PluginMetadata) -> None:
         """The internal method for applying the plugin information
         is called only during the creation of the plugin instance
         and used by FSM"""

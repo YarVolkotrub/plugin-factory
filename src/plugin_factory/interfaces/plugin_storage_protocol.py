@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import Sequence, Protocol
 
 
-class StorageProtocol(Protocol):
+class PluginStorageProtocol(Protocol):
     @property
     @abstractmethod
     def plugins(self) -> Sequence[Path]: ...

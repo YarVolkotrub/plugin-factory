@@ -6,15 +6,17 @@ from importlib import util
 from pathlib import Path
 from types import ModuleType
 
-from plugin_factory.contracts import ImporterProtocol
+from plugin_factory.interfaces import ImporterProtocol
 from plugin_factory.exceptions import PluginImportError, PluginStorageError
 
 
-class ModuleImporter(ImporterProtocol):
+class ImportlibModuleImporter(ImporterProtocol):
     def import_module(self, plugin: Path) -> ModuleType:
         try:
             plugin_name: str = self.__generate_module_name(plugin)
-            module = self.__import_module_from_file(plugin, plugin_name)
+            module: ModuleType = self.__import_module_from_file(
+                plugin,
+                plugin_name)
 
             return module
         except Exception as exc:

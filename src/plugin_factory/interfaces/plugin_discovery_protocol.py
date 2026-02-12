@@ -5,6 +5,6 @@ if TYPE_CHECKING:
     from plugin_factory.core import FinderStorage
 
 
-class FinderManagerProtocol(Protocol):
+class PluginDiscoveryProtocol(Protocol):
     @abstractmethod
     def find_in_directory(self, storage: FinderStorage) -> None: ...

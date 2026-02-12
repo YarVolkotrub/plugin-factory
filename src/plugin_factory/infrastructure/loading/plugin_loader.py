@@ -5,13 +5,13 @@ from pathlib import Path
 from types import MappingProxyType, ModuleType
 from typing import Sequence, Type, TYPE_CHECKING, Dict
 
-from plugin_factory.contracts import PluginLoaderProtocol
+from plugin_factory.interfaces import PluginLoaderProtocol
 
 if TYPE_CHECKING:
     from plugin_factory.core import PluginBase
-    from plugin_factory.contracts import (
-        StorageProtocol,
-        InstanceProtocol,
+    from plugin_factory.interfaces import (
+        PluginStorageProtocol,
+        PluginInstanceProtocol,
         ClassExtractorProtocol,
         ImporterProtocol,
     )
@@ -22,10 +22,10 @@ logger = logging.getLogger(__name__)
 class PluginLoader(PluginLoaderProtocol):
     def __init__(
         self,
-        storage: StorageProtocol,
+        storage: PluginStorageProtocol,
         importer: ImporterProtocol,
         class_extractor: ClassExtractorProtocol,
-        factory: InstanceProtocol,
+        factory: PluginInstanceProtocol,
     ) -> None:
         self._storage = storage
         self._importer = importer

@@ -12,7 +12,7 @@ from plugin_factory.infrastructure.state_machine.lifecycle_transitions import \
 if TYPE_CHECKING:
     from plugin_factory.core import (
         PluginBase,
-        PluginInfo,
+        PluginMetadata,
         FSMState
     )
 
@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 logger = logging.getLogger(__name__)
 
 
-class LifecycleManager:
+class PluginLifecycleController:
     def __init__(self, allow_state: MappingProxyType[
         FSMState,Dict[FSMAction, FSMState]
     ]) -> None:
@@ -28,7 +28,7 @@ class LifecycleManager:
         self._state_transitions = LifecycleTransitions(allow_state)
 
 # region Plugin Information Methods
-    def get_plugin_info(self) -> MappingProxyType[str, PluginInfo]:
+    def get_plugin_metadata(self) -> MappingProxyType[str, PluginMetadata]:
         return MappingProxyType({name: plugin.info
                 for name, plugin in self._plugins.items()})
 
@@ -72,15 +72,15 @@ class LifecycleManager:
 
 # region method for solo plugin
     def initialize_plugin(self, plugin_name: str) -> None:
-        plugin = self.__require_plugin(plugin_name)
+        plugin: PluginBase = self.__require_plugin(plugin_name)
         self.__change_state(FSMAction.INIT, plugin)
 
     def start_plugin(self, plugin_name: str) -> None:
-        plugin = self.__require_plugin(plugin_name)
+        plugin: PluginBase = self.__require_plugin(plugin_name)
         self.__change_state(FSMAction.START, plugin)
 
     def stop_plugin(self, plugin_name: str) -> None:
-        plugin = self.__require_plugin(plugin_name)
+        plugin: PluginBase = self.__require_plugin(plugin_name)
         self.__change_state(FSMAction.STOP, plugin)
 
 # endregion

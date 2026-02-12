@@ -5,6 +5,6 @@ if TYPE_CHECKING:
     from plugin_factory.core import PluginBase
 
 
-class InstanceProtocol(Protocol):
+class PluginInstanceProtocol(Protocol):
     @abstractmethod
     def get_instance(self, plugin_class: Type[PluginBase]) -> PluginBase: ...

@@ -4,15 +4,15 @@ import inspect
 from types import ModuleType
 from typing import Type
 
-from plugin_factory.contracts import ClassExtractorProtocol
+from plugin_factory.interfaces import ClassExtractorProtocol
 from plugin_factory.core import PluginBase
 from plugin_factory.exceptions import PluginDefinitionError
 
 
-class PluginClassExtractor(ClassExtractorProtocol):
+class ClassExtractor(ClassExtractorProtocol):
     def extract_plugin_class(self, module: ModuleType) -> Type[PluginBase]:
         try:
-            plugin_cls = module.__plugin__
+            plugin_cls: Type[PluginBase] = module.__plugin__
         except AttributeError:
             raise PluginDefinitionError(
                 f"Module '{module.__name__}' does not define __plugin__")

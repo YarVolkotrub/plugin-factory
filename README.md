@@ -44,10 +44,10 @@ plugin-factory/
 │   └── plugins/                        # Примеры плагинов
 ├── src/
 │   └── plugin_factory/
-│       ├── contracts/                  # Контракты и интерфейсы
+│       ├── interfaces/                 # Интерфейсы
 │       ├── core/                       # Базовая логика
 │       ├── infrastructure/             # State machine и инфраструктура
-│       └── runtime/                    # Runtime API
+│       └── application/                # API
 ├── tests/                              # Тесты
 ├── pyproject.toml                      # Конфигурация проекта
 └── README.md

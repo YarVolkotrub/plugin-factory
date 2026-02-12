@@ -8,9 +8,9 @@ from plugin_factory.exceptions import ConfigurationError
 
 
 @dataclass(frozen=True, slots=True)
-class PluginInfo:
+class PluginMetadata:
     """Basic information about plugin.
-    PluginInfo is created only during plugin instantiation
+    PluginMetadata is created only during plugin instantiation
     and must not be created manually elsewhere.
     """
     name: str
@@ -48,19 +48,19 @@ class PluginInfo:
         if new_state is FSMState.FAILED:
             raise ValueError("Use fail()")
 
-        new_info: PluginInfo = replace(self, state=new_state)
+        new_info: PluginMetadata = replace(self, state=new_state)
 
         assert new_info is not self
         assert new_info.state is new_state
 
         return new_info
 
-    def fail(self, error: BaseException) -> PluginInfo:
+    def fail(self, error: BaseException) -> PluginMetadata:
         """Set the error of the plugin."""
         if not isinstance(error, Exception):
             raise TypeError("error must be Exception")
 
-        new_info: PluginInfo = replace(self, state=FSMState.FAILED, error=error)
+        new_info: PluginMetadata = replace(self, state=FSMState.FAILED, error=error)
 
         assert new_info is not self
         assert new_info.error is error
