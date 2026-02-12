@@ -40,7 +40,6 @@ class LifecycleTransitions:
                 f"Plugin '{plugin.info.name}' "
                 f"failed during action '{action.name}'",
             )
-            raise
 
     def __get_next_state(self, current_state: FSMState,
                          action: FSMAction) -> FSMState:
@@ -49,6 +48,7 @@ class LifecycleTransitions:
                 f"Action '{action.name}' "
                 f"not allowed from state '{current_state.name}'"
             )
+
         return self.__allow_state_transitions[current_state][action]
 
     def __is_action_allowed(

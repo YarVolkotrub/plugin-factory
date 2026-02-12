@@ -12,11 +12,11 @@ class ExamplePlugin0(PluginBase):
         ...
 
     def start(self) -> None:
-        # if 1/0:
-        #     raise RuntimeError("Connection failed")
         ...
 
     def shutdown(self) -> None:
+        if 1/0:
+            raise RuntimeError("Connection failed")
         ...
 
     def restart(self):
